@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="artifact-type" content="dashboard">
   <meta name="design-style" content="briefing">
-  <title>Laporan &amp; Dashboard PDRB Kabupaten Solok Selatan Triwulan III-2026</title>
+  <title>Dashboard &amp; Laporan PDRB Kabupaten Solok Selatan — Triwulan III-2026</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
   <style>
     :root {
       color-scheme: light;
@@ -35,45 +39,44 @@
       --error: #b42318;
       --on-error: #ffffff;
 
-      /* Data series */
       --data-1: #1f4e5f;
       --data-2: #d99000;
       --data-3: #2b6e52;
       --data-4: #b84a39;
       --data-context: #c4bfb2;
 
-      /* Extra semantic & surface tokens for states (no inline hex anywhere) */
-      --positive: #2b6e52;
-      --positive-bg: #e8f3ee;
-      --warning: #785008;
-      --warning-bg: #f5e6c4;
-      --negative: #b42318;
-      --negative-bg: #fbeceb;
-      --secondary-bg: #e9f1f4;
-      --border-strong: #c8c4b8;
-      --focus: #1f4e5f;
-
-      /* Fonts */
       --font-headline: 'Source Serif 4', serif;
       --font-body: 'Plus Jakarta Sans', sans-serif;
       --font-label: 'Geist Mono', monospace;
 
-      /* Shape */
       --rounded: 0.25rem;
       --rounded-lg: 0.375rem;
       --rounded-full: 0.25rem;
 
-      /* Style effects */
       --section-rule: 1.5px solid var(--outline);
       --card-border: 1px solid var(--outline-variant);
-      --button-border: 1px solid var(--border-strong);
       --badge-radius: 2px;
       --heading-tracking: -0.02em;
       --label-tracking: 0.08em;
 
+      /* 2. Extended surface/tint tokens (no inline hex in rules below) */
+      --tag-warm-bg: #f5e6c4;
+      --positive-bg: #e7f3ed;
+      --error-bg: #fbeae8;
+      --secondary-bg: #e6eff2;
+      --button-secondary-border: #c8c4b8;
+      --row-hover: #f7f5ef;
+      --row-selected: #eef4f6;
+      --row-zero-bg: #faf8f4;
+
+      /* 3. Shared design foundation tokens */
+      --positive: #2b6e52;
+      --warning: #785008;
+      --focus: #1f4e5f;
+
       /* Dashboard type scale */
-      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.35rem);
-      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.55rem);
+      --display-size: clamp(1.75rem, 1.4rem + 1.3vw, 2.35rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
       --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
       --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
       --label-size: 0.75rem;
@@ -85,6 +88,7 @@
       --space-lg: 1.5rem;
       --space-xl: 2.5rem;
       --space-2xl: 4rem;
+      --space-3xl: 6rem;
 
       /* Motion */
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -94,6 +98,7 @@
       --dur-long: 420ms;
     }
 
+    /* Base reset */
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
       overflow-x: clip;
@@ -106,26 +111,27 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
+    html { scroll-behavior: smooth; }
     header { position: static !important; }
+
+    button, input, select, textarea { font-family: inherit; }
+
+    :focus-visible {
+      outline: 2.5px solid var(--focus);
+      outline-offset: 2px;
+    }
 
     .page-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr);
       gap: var(--space-xl);
       padding: var(--space-lg);
-      max-width: 1260px;
+      max-width: 1360px;
       margin: 0 auto;
       overflow: hidden;
     }
     .page-grid * { min-width: 0; }
 
-    /* Focus rings */
-    :focus-visible {
-      outline: 2px solid var(--focus);
-      outline-offset: 2px;
-    }
-
-    /* Typography & Briefing Defining Treatments */
+    /* Briefing Dossier Treatments */
     .dossier-bar {
       display: flex;
       flex-wrap: wrap;
@@ -150,16 +156,18 @@
       font-size: 0.6875rem;
       letter-spacing: var(--label-tracking);
       text-transform: uppercase;
-      padding: var(--space-xs) var(--space-sm);
+      padding: 0.2rem 0.55rem;
       border-radius: var(--badge-radius);
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
     }
     .dossier-meta {
       font-family: var(--font-label);
       font-size: var(--label-size);
       color: var(--on-surface-variant);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
     }
 
     .title {
@@ -171,358 +179,513 @@
       color: var(--on-surface);
       margin: 0;
     }
-    .standfirst {
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: var(--subhead-size);
-      color: var(--secondary);
-      margin: var(--space-sm) 0 0 0;
-      max-width: 72ch;
-      line-height: 1.45;
-    }
-
-    .section-heading {
+    .section-title {
       font-family: var(--font-headline);
       font-weight: 600;
       font-size: var(--headline-size);
       letter-spacing: var(--heading-tracking);
       line-height: 1.15;
       color: var(--on-surface);
+      margin: 0 0 var(--space-xs) 0;
+    }
+    .card-title {
+      font-family: var(--font-headline);
+      font-weight: 600;
+      font-size: var(--subhead-size);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      color: var(--on-surface);
       margin: 0;
     }
-    .section-deck {
+    .standfirst {
       font-family: var(--font-body);
-      font-size: var(--body-size);
+      font-weight: 600;
+      font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      color: var(--secondary);
+      margin: var(--space-sm) 0 0 0;
+      max-width: 78ch;
+      line-height: 1.5;
+    }
+    .section-desc {
       color: var(--on-surface-variant);
-      margin: var(--space-xs) 0 0 0;
-      max-width: 70ch;
+      margin: 0 0 var(--space-md) 0;
+      max-width: 78ch;
+      font-size: 0.9375rem;
     }
 
-    /* Quick Jump Navigation */
-    .quick-nav {
+    /* Quick Nav & Actions Bar */
+    .masthead-controls {
       display: flex;
       flex-wrap: wrap;
-      gap: var(--space-sm);
-      margin-top: var(--space-md);
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
       padding-top: var(--space-md);
       border-top: var(--card-border);
     }
-    .quick-nav-btn {
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      font-weight: 500;
-      color: var(--on-surface);
-      background: var(--surface-container-low);
-      border: var(--card-border);
-      border-radius: var(--rounded);
-      padding: var(--space-xs) var(--space-md);
-      min-height: 44px;
+    .anchor-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .nav-link {
       display: inline-flex;
       align-items: center;
       gap: var(--space-xs);
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
-    }
-    .quick-nav-btn:hover {
-      background: var(--surface-container-high);
-      border-color: var(--outline);
-    }
-    .quick-nav-btn .idx {
-      color: var(--secondary);
+      min-height: 44px;
+      padding: 0 var(--space-md);
+      background: var(--surface-container-low);
+      border: 1px solid var(--button-secondary-border);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      text-decoration: none;
+      font-size: 0.8125rem;
       font-weight: 600;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .nav-link:hover {
+      background: var(--surface-container-high);
+      color: var(--secondary);
+    }
+    .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
     }
 
-    /* Figure cards */
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: 0 var(--space-md);
+      border-radius: var(--rounded);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: var(--secondary);
+    }
+    .btn-secondary {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border-color: var(--button-secondary-border);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-container);
+    }
+    .btn-pill {
+      min-height: 44px;
+      padding: 0 0.85rem;
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      color: var(--on-surface-variant);
+      border: 1px solid var(--outline-variant);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .btn-pill:hover {
+      background: var(--surface-container);
+      color: var(--on-surface);
+    }
+    .btn-pill.active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    /* Figure Cards */
     .figure-card {
       background: var(--surface-container-low);
       border: var(--card-border);
       border-radius: var(--rounded-lg);
       padding: var(--space-md) var(--space-lg);
-      transition: border-color var(--dur-short) var(--ease-out);
     }
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
       gap: var(--space-md);
+    }
+    .kpi-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-xs);
+      border-top: 3px solid var(--secondary);
+    }
+    .kpi-card.kpi-highlight {
+      border-top-color: var(--primary-container);
+    }
+    .kpi-card.kpi-negative {
+      border-top-color: var(--error);
+    }
+    .kpi-card.kpi-positive {
+      border-top-color: var(--positive);
     }
     .kpi-label {
       font-family: var(--font-label);
       font-size: var(--label-size);
-      font-weight: 500;
+      color: var(--on-surface-variant);
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: var(--on-surface-variant);
-      margin: 0;
+      font-weight: 500;
     }
     .kpi-value {
       font-family: var(--font-headline);
       font-weight: 600;
-      font-size: clamp(1.5rem, 1.25rem + 0.9vw, 1.95rem);
+      font-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.95rem);
       font-variant-numeric: lining-nums tabular-nums;
-      letter-spacing: -0.02em;
-      color: var(--on-surface);
-      margin: var(--space-xs) 0;
       line-height: 1.15;
+      color: var(--on-surface);
     }
+    .kpi-value.val-positive { color: var(--positive); }
+    .kpi-value.val-negative { color: var(--error); }
     .kpi-sub {
-      font-family: var(--font-label);
-      font-size: var(--label-size);
+      font-size: 0.8125rem;
       color: var(--on-surface-variant);
       display: flex;
+      align-items: center;
       flex-wrap: wrap;
-      align-items: center;
-      gap: var(--space-sm);
+      gap: var(--space-xs);
     }
 
-    /* Status & semantic badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      font-weight: 600;
-      padding: 0.125rem var(--space-sm);
-      border-radius: var(--rounded);
-      font-variant-numeric: tabular-nums;
-    }
-    .badge-pos {
-      background: var(--positive-bg);
-      color: var(--positive);
-    }
-    .badge-neg {
-      background: var(--negative-bg);
-      color: var(--negative);
-    }
-    .badge-warn {
-      background: var(--warning-bg);
-      color: var(--tertiary);
-    }
-    .badge-neutral {
-      background: var(--surface-container);
-      color: var(--on-surface-variant);
-    }
-    .badge-info {
-      background: var(--secondary-bg);
-      color: var(--secondary);
-    }
-
-    /* Reconciliation Check Banner */
-    .rekon-strip {
+    /* Aside / Reconciliation Callout */
+    .aside-box {
       background: var(--surface-container);
       border-top: var(--section-rule);
-      border-radius: var(--rounded-lg);
       padding: var(--space-md) var(--space-lg);
+      border-radius: 0 0 var(--rounded-lg) var(--rounded-lg);
+    }
+    .reconcile-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
-      gap: var(--space-md);
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--space-lg);
       margin-top: var(--space-md);
     }
-    .rekon-item-label {
+    .reconcile-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .reconcile-table th, .reconcile-table td {
+      padding: var(--space-sm) var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      text-align: left;
+    }
+    .reconcile-table th {
       font-family: var(--font-label);
       font-size: var(--label-size);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--secondary);
-      font-weight: 600;
+      color: var(--on-surface-variant);
+      border-bottom: var(--section-rule);
     }
-    .rekon-item-val {
+    .reconcile-table .num {
+      text-align: right;
       font-family: var(--font-label);
-      font-size: var(--body-size);
-      font-weight: 600;
-      color: var(--on-surface);
       font-variant-numeric: tabular-nums;
-      margin-top: var(--space-xs);
+      font-weight: 500;
     }
 
-    /* Asymmetric Analytics Grid */
-    .analytics-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr);
-      gap: var(--space-lg);
-      align-items: start;
+    /* Badges & Deltas */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.125rem 0.45rem;
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
     }
-    .panel-header {
+    .tag-warm { background: var(--tag-warm-bg); color: var(--tertiary); }
+    .tag-pos { background: var(--positive-bg); color: var(--positive); }
+    .tag-neg { background: var(--error-bg); color: var(--error); }
+    .tag-info { background: var(--secondary-bg); color: var(--secondary); }
+
+    .delta-pos { color: var(--positive); font-weight: 600; }
+    .delta-neg { color: var(--error); font-weight: 600; }
+    .delta-neutral { color: var(--on-surface-variant); }
+
+    /* Charts Layout */
+    .chart-header {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
       align-items: flex-start;
-      gap: var(--space-sm);
+      justify-content: space-between;
+      gap: var(--space-md);
       margin-bottom: var(--space-md);
       padding-bottom: var(--space-sm);
       border-bottom: var(--card-border);
     }
-    .panel-title {
-      font-family: var(--font-headline);
-      font-weight: 600;
-      font-size: var(--subhead-size);
-      color: var(--on-surface);
-      margin: 0;
-    }
-    .panel-subtitle {
+    .chart-subtitle {
       font-family: var(--font-label);
       font-size: var(--label-size);
       color: var(--on-surface-variant);
-      margin: var(--space-xs) 0 0 0;
+      margin-top: var(--space-xs);
+      display: block;
     }
-
-    /* Controls & Segmented Buttons */
-    .controls-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      gap: var(--space-sm);
-      margin-bottom: var(--space-md);
-    }
-    .segmented-group {
-      display: inline-flex;
-      flex-wrap: wrap;
-      gap: var(--space-sm);
-      background: var(--surface-container);
-      padding: var(--space-xs);
-      border-radius: var(--rounded);
-      border: var(--card-border);
-    }
-    .seg-btn {
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      font-weight: 600;
-      color: var(--on-surface-variant);
-      background: transparent;
-      border: none;
-      border-radius: var(--rounded);
-      padding: var(--space-xs) var(--space-md);
-      min-height: 44px;
-      cursor: pointer;
-      transition: background-color var(--dur-micro) var(--ease-in-out), color var(--dur-micro) var(--ease-in-out);
-    }
-    .seg-btn:hover {
-      color: var(--on-surface);
-      background: var(--surface-container-high);
-    }
-    .seg-btn.active {
-      background: var(--primary);
-      color: var(--on-primary);
-    }
-
-    .btn-secondary {
-      font-family: var(--font-body);
-      font-size: var(--label-size);
-      font-weight: 600;
-      background: var(--surface-container-low);
-      color: var(--on-surface);
-      border: var(--button-border);
-      border-radius: var(--rounded);
-      padding: var(--space-xs) var(--space-md);
-      min-height: 44px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-xs);
-      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
-    }
-    .btn-secondary:hover {
-      background: var(--surface-container);
-      border-color: var(--outline);
-    }
-    .btn-primary {
-      font-family: var(--font-body);
-      font-size: var(--label-size);
-      font-weight: 600;
-      background: var(--primary);
-      color: var(--on-primary);
-      border: 1px solid var(--primary);
-      border-radius: var(--rounded);
-      padding: var(--space-xs) var(--space-md);
-      min-height: 44px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-xs);
-      transition: opacity var(--dur-micro) var(--ease-out);
-    }
-    .btn-primary:hover { opacity: 0.88; }
-
-    /* Chart containers */
     .chart-box {
       position: relative;
       width: 100%;
-      min-height: 440px;
-      height: 460px;
+      min-height: 360px;
     }
     .chart-box-tall {
       position: relative;
       width: 100%;
-      min-height: 500px;
-      height: 520px;
+      min-height: 440px;
     }
     .chart-box-compact {
       position: relative;
       width: 100%;
-      min-height: 360px;
-      height: 380px;
+      min-height: 310px;
     }
 
-    /* Callouts & Sidebar Notes */
-    .aside-box {
-      background: var(--surface-container);
-      border-top: var(--section-rule);
-      padding: var(--space-md);
-      border-radius: 0 0 var(--rounded-lg) var(--rounded-lg);
-      margin-top: var(--space-md);
-      font-size: var(--label-size);
-      color: var(--on-surface);
-    }
-    .aside-box strong {
-      color: var(--secondary);
-    }
-
-    /* Trade Gross Summary Strip inside Expenditure */
-    .trade-strip {
+    /* Separated 3-Column Matrix Grid */
+    .matrix-3-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
-      gap: var(--space-sm);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-md);
       margin-top: var(--space-md);
-      padding-top: var(--space-md);
-      border-top: var(--card-border);
     }
-    .trade-mini {
-      background: var(--background);
-      border: var(--card-border);
-      border-radius: var(--rounded);
+    .split-2-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-lg);
+      margin-top: var(--space-md);
+    }
+    .matrix-rule-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      background: var(--surface-container);
+      border-left: 4px solid var(--secondary);
       padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-md);
+      font-size: 0.875rem;
     }
-    .trade-mini-title {
+
+    /* Table Explorer Controls */
+    .explorer-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+      padding: var(--space-md);
+      background: var(--surface-container);
+      border-radius: var(--rounded-lg);
+      border: var(--card-border);
+    }
+    .control-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      min-width: 240px;
+      flex: 1 1 260px;
+    }
+    .control-label {
       font-family: var(--font-label);
       font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface);
+    }
+    .text-input, .select-input {
+      min-height: 44px;
+      padding: 0.5rem 0.75rem;
+      background: var(--surface-container-low);
+      border: 1px solid var(--button-secondary-border);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      font-size: 0.9rem;
+    }
+    .select-input {
+      padding-right: 2rem;
+    }
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    /* Inspector Strip */
+    .inspector-strip {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: 4px solid var(--primary-container);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      margin-bottom: var(--space-md);
+      display: grid;
+      grid-template-columns: 1.5fr 2fr;
+      gap: var(--space-md);
+      align-items: center;
+    }
+    .inspector-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: var(--space-sm);
+    }
+    .inspector-metric-item {
+      background: var(--background);
+      padding: var(--space-sm);
+      border-radius: var(--rounded);
+      border: var(--card-border);
+    }
+    .inspector-metric-item .m-lbl {
+      display: block;
+      font-family: var(--font-label);
+      font-size: 0.7rem;
       color: var(--on-surface-variant);
       text-transform: uppercase;
     }
-    .trade-mini-val {
-      font-family: var(--font-headline);
+    .inspector-metric-item .m-val {
+      font-family: var(--font-label);
       font-weight: 600;
-      font-size: var(--subhead-size);
+      font-size: 0.9rem;
       font-variant-numeric: tabular-nums;
-      margin: var(--space-xs) 0;
     }
 
-    /* Phenomena Narrative Cards */
-    .phenomena-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-      gap: var(--space-md);
-    }
-    .phenom-card {
+    /* Dense Data Tables */
+    .table-wrap {
       background: var(--surface-container-low);
       border: var(--card-border);
       border-radius: var(--rounded-lg);
-      padding: var(--space-lg);
+      overflow-x: auto;
+      max-height: 760px;
+      overflow-y: auto;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .data-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 0.65rem;
+      border-bottom: var(--section-rule);
+      text-align: left;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .data-table thead th.num {
+      text-align: right;
+    }
+    .sort-btn {
+      background: transparent;
+      border: none;
+      color: inherit;
+      font: inherit;
+      text-transform: inherit;
+      letter-spacing: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0;
+      min-height: 32px;
+    }
+    .sort-btn:hover { color: var(--secondary); }
+    .data-table tbody tr {
+      border-bottom: 1px solid var(--outline-variant);
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .data-table tbody tr:hover {
+      background: var(--row-hover);
+    }
+    .data-table tbody tr.is-selected {
+      background: var(--row-selected);
+    }
+    .data-table td {
+      padding: 0.55rem 0.65rem;
+      vertical-align: middle;
+    }
+    .data-table td.code-cell {
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      color: var(--secondary);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .data-table td.num {
+      text-align: right;
+      font-family: var(--font-label);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      font-size: 0.84rem;
+    }
+
+    /* Row Hierarchy Levels */
+    .row-level-0 {
+      background: var(--surface-container);
+      font-weight: 700;
+      border-top: var(--section-rule);
+      border-bottom: var(--section-rule);
+    }
+    .row-level-1 {
+      background: var(--surface-container-low);
+      font-weight: 700;
+    }
+    .row-level-2 td.name-cell {
+      padding-left: 1.5rem;
+      font-weight: 600;
+    }
+    .row-level-3 td.name-cell {
+      padding-left: 2.6rem;
+      color: var(--on-surface-variant);
+    }
+    .row-zero {
+      background: var(--row-zero-bg);
+    }
+    .row-zero td.name-cell {
+      color: var(--on-surface-variant);
+    }
+
+    /* Narrative Phenomenon Cards */
+    .phenomena-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .phenomenon-card {
       display: flex;
       flex-direction: column;
       gap: var(--space-sm);
     }
-    .phenom-top {
+    .phenomenon-head {
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
       gap: var(--space-sm);
       border-bottom: var(--card-border);
@@ -534,216 +697,65 @@
       font-size: var(--label-size);
       color: var(--secondary);
       background: var(--surface-container);
-      padding: var(--space-xs) var(--space-sm);
+      padding: 0.2rem 0.45rem;
       border-radius: var(--rounded);
     }
-    .phenom-title {
-      font-family: var(--font-headline);
-      font-weight: 600;
-      font-size: var(--subhead-size);
-      color: var(--on-surface);
-      margin: 0;
-      line-height: 1.25;
-    }
-    .phenom-body {
-      margin: 0;
-      font-size: var(--body-size);
-      color: var(--on-surface-variant);
-      line-height: 1.55;
-    }
-    .phenom-metrics {
+    .phenomenon-metrics {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-xs);
-      margin-top: auto;
-      padding-top: var(--space-xs);
+      margin-top: var(--space-xs);
+    }
+    .phenomenon-card p {
+      margin: 0;
+      font-size: 0.925rem;
+      color: var(--on-surface);
+      line-height: 1.6;
     }
 
-    /* Tables & Filters */
-    .filter-bar {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
-      gap: var(--space-md);
-      align-items: end;
-      margin-bottom: var(--space-md);
-    }
-    .field-group {
+    .table-status {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-sm);
       display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-    }
-    .field-label {
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--on-surface-variant);
-    }
-    .input-control, .select-control {
-      font-family: var(--font-body);
-      font-size: var(--body-size);
-      color: var(--on-surface);
-      background: var(--surface-container-low);
-      border: var(--button-border);
-      border-radius: var(--rounded);
-      padding: var(--space-sm) var(--space-md);
-      min-height: 44px;
-      width: 100%;
-    }
-    .select-control {
-      padding-right: var(--space-xl);
-      cursor: pointer;
-    }
-    .table-wrap {
-      overflow-x: auto;
-      border: var(--card-border);
-      border-radius: var(--rounded-lg);
-      background: var(--surface-container-low);
-    }
-    table.data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: var(--label-size);
-      background: var(--surface-container-low);
-    }
-    table.data-table thead th {
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--on-surface);
-      background: var(--surface-container);
-      border-bottom: var(--section-rule);
-      padding: var(--space-sm) var(--space-md);
-      text-align: left;
-      white-space: nowrap;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-    table.data-table thead th.num {
-      text-align: right;
-    }
-    .sort-btn {
-      font-family: inherit;
-      font-size: inherit;
-      font-weight: inherit;
-      text-transform: inherit;
-      letter-spacing: inherit;
-      color: inherit;
-      background: transparent;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-    .sort-btn:hover { color: var(--secondary); }
-    table.data-table tbody td {
-      padding: var(--space-sm) var(--space-md);
-      border-bottom: var(--card-border);
-      vertical-align: middle;
-    }
-    table.data-table tbody tr:hover {
-      background: var(--background);
-    }
-    table.data-table tbody tr.row-parent {
-      font-weight: 600;
-      color: var(--on-surface);
-    }
-    table.data-table tbody tr.row-sub {
-      color: var(--on-surface-variant);
-      background: var(--surface-container-low);
-    }
-    table.data-table tbody tr.row-sub td:first-child {
-      padding-left: var(--space-xl);
-    }
-    table.data-table tbody tr.row-total {
-      font-weight: 700;
-      background: var(--surface-container);
-      border-top: var(--section-rule);
-      color: var(--on-surface);
-    }
-    td.num {
-      font-family: var(--font-label);
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      white-space: nowrap;
-    }
-    .code-tag {
-      font-family: var(--font-label);
-      font-weight: 600;
-      color: var(--secondary);
-      margin-right: var(--space-xs);
-    }
-
-    /* Checkbox inline toggle */
-    .checkbox-label {
-      display: inline-flex;
-      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
       gap: var(--space-sm);
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      color: var(--on-surface);
-      cursor: pointer;
-      min-height: 44px;
-      padding: 0 var(--space-sm);
-      background: var(--surface-container);
-      border: var(--card-border);
-      border-radius: var(--rounded);
-    }
-    .checkbox-label input {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--secondary);
-      cursor: pointer;
     }
 
-    /* Empty state */
     .empty-state {
       padding: var(--space-xl);
       text-align: center;
       color: var(--on-surface-variant);
-      display: none;
     }
 
-    /* Footer */
-    .report-footer {
+    footer {
       border-top: var(--section-rule);
       padding-top: var(--space-md);
+      margin-top: var(--space-md);
+      color: var(--on-surface-variant);
+      font-size: 0.85rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       gap: var(--space-md);
-      font-family: var(--font-label);
-      font-size: var(--label-size);
-      color: var(--on-surface-variant);
     }
 
-    @media (max-width: 960px) {
-      .analytics-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-      .filter-bar {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    @media (max-width: 1080px) {
+      .matrix-3-grid { grid-template-columns: 1fr; }
+      .split-2-grid { grid-template-columns: 1fr; }
+      .reconcile-grid { grid-template-columns: 1fr; }
+      .inspector-strip { grid-template-columns: 1fr; }
     }
+
     @media (max-width: 640px) {
-      .page-grid {
-        padding: var(--space-md);
-        gap: var(--space-lg);
-      }
-      .figure-card {
-        padding: var(--space-md);
-      }
-      .chart-box, .chart-box-tall {
-        min-height: 360px;
-        height: 400px;
-      }
+      .page-grid { padding: var(--space-md); gap: var(--space-lg); }
+      .figure-card { padding: var(--space-md); }
+      .row-level-2 td.name-cell { padding-left: 1rem; }
+      .row-level-3 td.name-cell { padding-left: 1.5rem; }
     }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -755,1249 +767,1489 @@
 </head>
 <body>
   <div class="page-grid">
-    <!-- HEADER / MASTHEAD -->
+
+    <!-- MASTHEAD -->
     <header>
       <div class="dossier-bar">
         <div class="dossier-bar-left">
-          <span class="dossier-pill">DOSSIER PDRB</span>
-          <span class="dossier-meta">KABUPATEN SOLOK SELATAN · TRIWULAN III-2026</span>
+          <span class="dossier-pill">DOSSIER EKONOMI DAERAH</span>
+          <span class="dossier-meta">KABUPATEN SOLOK SELATAN · TRIWULAN III-2026 (Q3-2026) · 66 BARIS LU &amp; 18 BARIS PENGELUARAN</span>
         </div>
-        <span class="dossier-meta">DATA REKONSILIASI RESMI (ADHB &amp; ADHK 2010)</span>
+        <span class="dossier-meta">TAHUN DASAR 2010 = 100</span>
       </div>
-      <h1 class="title">Laporan &amp; Dashboard PDRB Kabupaten Solok Selatan Triwulan III-2026</h1>
-      <p class="standfirst">
-        Evaluasi terintegrasi Sisi Lapangan Usaha dan Sisi Pengeluaran: ekonomi daerah tumbuh +4,81% (YoY) dan +5,29% (CtoC) di tengah penyesuaian musiman triwulanan -0,33% (QoQ), ditopang panen puncak sawit, komersialisasi panas bumi, dan akselerasi proyek infrastruktur.
-      </p>
-      <nav class="quick-nav" aria-label="Navigasi Bagian Laporan">
-        <button type="button" class="quick-nav-btn" onclick="scrollToSection('sec-makro')"><span class="idx">01</span> Ringkasan Makro</button>
-        <button type="button" class="quick-nav-btn" onclick="scrollToSection('sec-lapus')"><span class="idx">02</span> Sisi Lapangan Usaha</button>
-        <button type="button" class="quick-nav-btn" onclick="scrollToSection('sec-pengeluaran')"><span class="idx">03</span> Sisi Pengeluaran</button>
-        <button type="button" class="quick-nav-btn" onclick="scrollToSection('sec-fenomena')"><span class="idx">04</span> Fenomena Riil Q3-2026</button>
-        <button type="button" class="quick-nav-btn" onclick="scrollToSection('sec-tabel')"><span class="idx">05</span> Eksplorasi Tabel Lengkap</button>
-        <button type="button" class="quick-nav-btn" onclick="scrollToSection('sec-metode')"><span class="idx">06</span> Catatan Metodologi</button>
-      </nav>
+
+      <h1 class="title">Dashboard &amp; Laporan Eksekutif PDRB Kabupaten Solok Selatan Triwulan III-2026</h1>
+      <p class="standfirst">Rekonsiliasi penuh dua sisi neraca ekonomi daerah — Lapangan Usaha (17 kategori, seluruh subkategori termasuk C.1–C.16) dan Pengeluaran (18 baris komponen permintaan akhir) pada nilai Rp 2.296.186,42 Juta ADHB dan Rp 1.256.915,88 Juta ADHK.</p>
+
+      <div class="masthead-controls">
+        <nav class="anchor-nav" aria-label="Navigasi bagian laporan">
+          <a class="nav-link" href="#sec-makro">01 Indikator Makro</a>
+          <a class="nav-link" href="#sec-viz-lu">02 Grafik Lapangan Usaha</a>
+          <a class="nav-link" href="#sec-viz-peng">03 Grafik Pengeluaran</a>
+          <a class="nav-link" href="#sec-tbl-lu">04 Tabel Lengkap LU (66)</a>
+          <a class="nav-link" href="#sec-tbl-peng">05 Tabel Pengeluaran (18)</a>
+          <a class="nav-link" href="#sec-fenomena">06 Narasi Fenomena</a>
+        </nav>
+        <div class="action-group">
+          <button type="button" class="btn btn-secondary" onclick="exportTableCSV('lu')">
+            <i data-lucide="download" aria-hidden="true"></i>
+            Unduh CSV LU (66 Baris)
+          </button>
+          <button type="button" class="btn btn-primary" onclick="exportTableCSV('peng')">
+            <i data-lucide="download" aria-hidden="true"></i>
+            Unduh CSV Pengeluaran (18 Baris)
+          </button>
+        </div>
+      </div>
     </header>
 
-    <!-- 01. RINGKASAN MAKRO -->
+    <!-- SECTION 01: MACRO KPI & RECONCILIATION -->
     <section id="sec-makro" aria-labelledby="h-makro">
       <div class="dossier-bar">
         <div class="dossier-bar-left">
-          <span class="dossier-pill">01</span>
-          <span class="dossier-meta">INDIKATOR MAKRO UTAMA &amp; KONSISTENSI ANTAR-SISI</span>
+          <span class="dossier-pill">01 · INDIKATOR MAKRO</span>
+          <span class="dossier-meta">REKONSILIASI PRESISI 100% ANTARA SISI PRODUKSI &amp; SISI PENGELUARAN</span>
         </div>
-        <span class="badge badge-pos">REKON KLOP 100% ANTAR-SISI</span>
       </div>
-      <h2 id="h-makro" class="section-heading">Kinerja Agregat PDRB Triwulan III-2026</h2>
-      <p class="section-deck">
-        Seluruh angka agregat nilai nominal, nilai riil tahun dasar 2010, serta laju pertumbuhan antar-waktu identik secara presisi antara pendekatan produksi (Lapangan Usaha) dan pendekatan permintaan akhir (Pengeluaran).
-      </p>
+      <h2 id="h-makro" class="section-title">Ringkasan Eksekutif &amp; Rekonsiliasi Dua Sisi</h2>
+      <p class="section-desc">Seluruh angka indikator makro di bawah ini terkonsolidasi identik antara agregat 17 kategori Lapangan Usaha dan 8 komponen Pengeluaran pada Triwulan III-2026.</p>
 
-      <div class="kpi-grid" style="margin-top: var(--space-md);">
-        <article class="figure-card">
-          <p class="kpi-label">Total PDRB ADHB (Harga Berlaku)</p>
-          <p class="kpi-value">Rp 2.296.186,42 Jt</p>
+      <div class="kpi-grid">
+        <div class="figure-card kpi-highlight">
+          <span class="kpi-label">PDRB Harga Berlaku (ADHB)</span>
+          <div class="kpi-value">Rp 2.296.186,42 Jt</div>
           <div class="kpi-sub">
-            <span class="badge badge-info">~Rp 2,296 Triliun</span>
-            <span>Periode Q3-2026</span>
+            <span class="tag tag-warm">~Rp 2,296 Triliun</span>
+            <span>Deflator Implisit: <strong>182,68</strong></span>
           </div>
-        </article>
+        </div>
 
-        <article class="figure-card">
-          <p class="kpi-label">Total PDRB ADHK (Konstan 2010)</p>
-          <p class="kpi-value">Rp 1.256.915,88 Jt</p>
+        <div class="figure-card">
+          <span class="kpi-label">PDRB Harga Konstan (ADHK)</span>
+          <div class="kpi-value">Rp 1.256.915,88 Jt</div>
           <div class="kpi-sub">
-            <span class="badge badge-neutral">~Rp 1,257 Triliun</span>
-            <span>Volume Riil 2010</span>
+            <span class="tag tag-info">~Rp 1,257 Triliun</span>
+            <span>Tahun Dasar 2010</span>
           </div>
-        </article>
+        </div>
 
-        <article class="figure-card">
-          <p class="kpi-label">Pertumbuhan Tahunan &amp; Kumulatif</p>
-          <p class="kpi-value">+4,81% <span style="font-size: var(--subhead-size); color: var(--on-surface-variant);">YoY</span></p>
+        <div class="figure-card kpi-positive">
+          <span class="kpi-label">Pertumbuhan Tahunan (YoY)</span>
+          <div class="kpi-value val-positive">+4,81%</div>
           <div class="kpi-sub">
-            <span class="badge badge-pos">CtoC +5,29%</span>
-            <span>Q1–Q3 2026 vs 2025</span>
+            <span class="tag tag-pos">Q3-2026 vs Q3-2025</span>
+            <span>Tanpa Migas: +1,03%</span>
           </div>
-        </article>
+        </div>
 
-        <article class="figure-card">
-          <p class="kpi-label">Pertumbuhan Triwulanan (QoQ)</p>
-          <p class="kpi-value">-0,33%</p>
+        <div class="figure-card kpi-positive">
+          <span class="kpi-label">Pertumbuhan Kumulatif (CtoC)</span>
+          <div class="kpi-value val-positive">+5,29%</div>
           <div class="kpi-sub">
-            <span class="badge badge-neg">Q3 vs Q2-2026</span>
-            <span>Normalisasi pasca-Iduladha</span>
+            <span class="tag tag-pos">Q1–Q3 2026 vs 2025</span>
+            <span>Tanpa Migas: +1,55%</span>
           </div>
-        </article>
+        </div>
+
+        <div class="figure-card kpi-negative">
+          <span class="kpi-label">Pertumbuhan Triwulanan (QoQ)</span>
+          <div class="kpi-value val-negative">-0,33%</div>
+          <div class="kpi-sub">
+            <span class="tag tag-neg">Q3-2026 vs Q2-2026</span>
+            <span>Tanpa Migas: -0,43%</span>
+          </div>
+        </div>
       </div>
 
-      <div class="rekon-strip" aria-label="Verifikasi Konsistensi Rekonsiliasi">
-        <div>
-          <div class="rekon-item-label">Sisi Lapangan Usaha (17 Kategori A–U)</div>
-          <div class="rekon-item-val">ADHB Rp 2.296.186,42 Jt · ADHK Rp 1.256.915,88 Jt</div>
+      <div class="reconcile-grid">
+        <div class="aside-box">
+          <h3 class="card-title">Matriks Rekonsiliasi Identitas Makro (100% Klop)</h3>
+          <table class="reconcile-table">
+            <thead>
+              <tr>
+                <th>Pendekatan Penghitungan</th>
+                <th class="num">ADHB (Juta Rp)</th>
+                <th class="num">ADHK (Juta Rp)</th>
+                <th class="num">QoQ (%)</th>
+                <th class="num">YoY (%)</th>
+                <th class="num">CtoC (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Sisi Lapangan Usaha (Total A s.d. R,S,T,U)</strong></td>
+                <td class="num">2.296.186,42</td>
+                <td class="num">1.256.915,88</td>
+                <td class="num delta-neg">-0,33</td>
+                <td class="num delta-pos">+4,81</td>
+                <td class="num delta-pos">+5,29</td>
+              </tr>
+              <tr>
+                <td><strong>Sisi Pengeluaran (Komponen 1 s.d. 8)</strong></td>
+                <td class="num">2.296.186,42</td>
+                <td class="num">1.256.915,88</td>
+                <td class="num delta-neg">-0,33</td>
+                <td class="num delta-pos">+4,81</td>
+                <td class="num delta-pos">+5,29</td>
+              </tr>
+              <tr>
+                <td>Diskrepansi Statistik (Selisih)</td>
+                <td class="num">0,00</td>
+                <td class="num">0,00</td>
+                <td class="num">0,00</td>
+                <td class="num">0,00</td>
+                <td class="num">0,00</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div>
-          <div class="rekon-item-label">Sisi Pengeluaran (Komponen 1–8)</div>
-          <div class="rekon-item-val">ADHB Rp 2.296.186,42 Jt · ADHK Rp 1.256.915,88 Jt</div>
-        </div>
-        <div>
-          <div class="rekon-item-label">Laju Pertumbuhan Terkonsolidasi</div>
-          <div class="rekon-item-val">YoY +4,81% · CtoC +5,29% · QoQ -0,33% (Selisih 0,00)</div>
+
+        <div class="aside-box">
+          <h3 class="card-title">Intisari Penggerak Utama Q3-2026</h3>
+          <p style="margin: var(--space-sm) 0 0 0; font-size: 0.9rem;">
+            Ekonomi Kabupaten Solok Selatan tumbuh solid secara tahunan (<strong>+4,81% YoY</strong>) dan kumulatif (<strong>+5,29% CtoC</strong>) ditopang panen puncak sawit <strong>A.1.e</strong> (<strong>+10,92% QoQ</strong>), akselerasi pengolahan CPO pada <strong>C.2</strong> (<strong>+22,95% QoQ</strong>), kontribusi panas bumi <strong>B.1</strong> (<strong>Rp 144,29 Miliar</strong>), investasi non-bangunan <strong>4.b</strong> (<strong>+17,23% YoY</strong>), serta kuliner/restoran <strong>I.2</strong> (<strong>+18,55% CtoC</strong>). Kontraksi tipis <strong>-0,33% QoQ</strong> mencerminkan normalisasi konsumsi dan peternakan pasca-Iduladha 1447 H dan libur sekolah pada Triwulan II.
+          </p>
         </div>
       </div>
     </section>
 
-    <!-- 02. SISI LAPANGAN USAHA -->
-    <section id="sec-lapus" aria-labelledby="h-lapus">
+    <!-- SECTION 02: CHARTS SISI LAPANGAN USAHA -->
+    <section id="sec-viz-lu" aria-labelledby="h-viz-lu">
       <div class="dossier-bar">
         <div class="dossier-bar-left">
-          <span class="dossier-pill">02</span>
-          <span class="dossier-meta">SISI LAPANGAN USAHA (PRODUKSI) · KOMPARASI INTERNAL LAPANGAN USAHA</span>
+          <span class="dossier-pill">02 · VISUAL LAPANGAN USAHA</span>
+          <span class="dossier-meta">MATRIKS TERPISAH KHUSUS SISI PRODUKSI (17 KATEGORI &amp; C.1–C.16)</span>
         </div>
-        <span class="dossier-meta">17 KATEGORI UTAMA &amp; 9 SUBSEKTOR STRATEGIS</span>
       </div>
-      <h2 id="h-lapus" class="section-heading">Struktur Ekonomi &amp; Dinamika Pertumbuhan Lapangan Usaha</h2>
-      <p class="section-deck">
-        Perbandingan di bawah ini khusus memetakan kontribusi dan laju pertumbuhan antar-sektor pada Sisi Lapangan Usaha. Setiap dimensi pertumbuhan (QoQ, YoY, dan CtoC) ditampilkan terpisah agar analisis antar-waktu tetap presisi.
-      </p>
+      <h2 id="h-viz-lu" class="section-title">Struktur &amp; Matriks Pertumbuhan Sisi Lapangan Usaha</h2>
+      <p class="section-desc">Setiap metrik laju pertumbuhan ditampilkan dalam panel terpisah (QoQ vs QoQ, YoY vs YoY, CtoC vs CtoC) dan tidak dicampur dengan komponen sisi Pengeluaran.</p>
 
-      <div class="analytics-grid" style="margin-top: var(--space-md);">
-        <!-- Chart 1: Share ADHB Lapangan Usaha -->
+      <div class="matrix-rule-banner">
+        <div>
+          <strong>Aturan Pemisahan Grafik:</strong> Panel ini khusus memuat data <strong>Lapangan Usaha</strong>. Grafik pertumbuhan memisahkan tegas dimensi waktu <strong>QoQ</strong>, <strong>YoY</strong>, dan <strong>CtoC</strong> ke dalam tiga kanvas terpisah.
+        </div>
+        <span class="tag tag-info">17 Kategori Utama · 16 Subkategori C</span>
+      </div>
+
+      <div class="split-2-grid">
         <div class="figure-card">
-          <div class="panel-header">
+          <div class="chart-header">
             <div>
-              <h3 class="panel-title">Struktur Ekonomi (Share ADHB %)</h3>
-              <p class="panel-subtitle">17 Kategori Lapangan Usaha · Total 100,00% (Rp 2.296.186,42 Jt)</p>
+              <h3 class="card-title">Struktur Ekonomi 17 Kategori Utama</h3>
+              <span class="chart-subtitle">SISI LAPANGAN USAHA · SHARE ADHB (%) VS NILAI TAMBAH</span>
             </div>
-            <div class="segmented-group" role="group" aria-label="Urutan Share Lapangan Usaha">
-              <button type="button" class="seg-btn active" id="btn-lapus-share-desc" onclick="setLapusShareSort('desc')">Terbesar</button>
-              <button type="button" class="seg-btn" id="btn-lapus-share-code" onclick="setLapusShareSort('code')">Kode A–U</button>
+            <div class="filter-pills" role="group" aria-label="Pilih mode struktur lapangan usaha">
+              <button type="button" class="btn-pill active" id="btn-lu-struct-share" onclick="setLuStructureMode('share')">Share ADHB (%)</button>
+              <button type="button" class="btn-pill" id="btn-lu-struct-val" onclick="setLuStructureMode('value')">ADHB vs ADHK (Miliar Rp)</button>
             </div>
           </div>
           <div class="chart-box-tall">
-            <canvas id="chart-lapus-share" aria-label="Grafik Share ADHB 17 Kategori Lapangan Usaha"></canvas>
+            <canvas id="chart-lu-structure"></canvas>
           </div>
         </div>
 
-        <!-- Chart 2: Pertumbuhan Lapangan Usaha (Strictly 1 metric at a time) -->
         <div class="figure-card">
-          <div class="panel-header">
+          <div class="chart-header">
             <div>
-              <h3 class="panel-title" id="lapus-growth-title">Komparasi Pertumbuhan YoY (%) — Lapangan Usaha</h3>
-              <p class="panel-subtitle" id="lapus-growth-sub">Hanya menampilkan metrik YoY (Q3-2026 vs Q3-2025) antar-lapangan usaha</p>
+              <h3 class="card-title">Rincian Industri Pengolahan (C.1 s.d. C.16)</h3>
+              <span class="chart-subtitle">PILIH SATU METRIK TUNGGAL — TANPA PENCAMPURAN QoQ/YoY/CtoC</span>
             </div>
-          </div>
-          <div class="controls-row">
-            <div class="field-group">
-              <span class="field-label">Dimensi Pertumbuhan (Terpisah)</span>
-              <div class="segmented-group" role="group" aria-label="Pilih Dimensi Pertumbuhan Lapangan Usaha">
-                <button type="button" class="seg-btn" id="btn-lapus-qoq" onclick="setLapusMetric('qoq')">QoQ (%)</button>
-                <button type="button" class="seg-btn active" id="btn-lapus-yoy" onclick="setLapusMetric('yoy')">YoY (%)</button>
-                <button type="button" class="seg-btn" id="btn-lapus-ctoc" onclick="setLapusMetric('ctoc')">CtoC (%)</button>
-              </div>
-            </div>
-            <div class="field-group">
-              <span class="field-label">Cakupan Sektor</span>
-              <div class="segmented-group" role="group" aria-label="Pilih Cakupan Lapangan Usaha">
-                <button type="button" class="seg-btn active" id="btn-lapus-scope-cat" onclick="setLapusScope('cat')">17 Kategori</button>
-                <button type="button" class="seg-btn" id="btn-lapus-scope-sub" onclick="setLapusScope('sub')">9 Subsektor Strategis</button>
-              </div>
+            <div class="filter-pills" role="group" aria-label="Pilih metrik industri pengolahan">
+              <button type="button" class="btn-pill active" id="btn-c-adhb" onclick="setIndustriMetric('adhb')">ADHB (Jt Rp)</button>
+              <button type="button" class="btn-pill" id="btn-c-qoq" onclick="setIndustriMetric('qoq')">QoQ (%)</button>
+              <button type="button" class="btn-pill" id="btn-c-yoy" onclick="setIndustriMetric('yoy')">YoY (%)</button>
+              <button type="button" class="btn-pill" id="btn-c-ctoc" onclick="setIndustriMetric('ctoc')">CtoC (%)</button>
             </div>
           </div>
           <div class="chart-box-tall">
-            <canvas id="chart-lapus-growth" aria-label="Grafik Laju Pertumbuhan Lapangan Usaha"></canvas>
+            <canvas id="chart-industri-c"></canvas>
           </div>
-          <div class="aside-box" id="lapus-b1-note">
-            <strong>Catatan Metodologi B.1 (Panas Bumi Supreme Energy):</strong> Pada tampilan Subsektor Strategis, laju YoY dan CtoC untuk B.1 bernilai <code>"-"</code> (tidak diplot) karena komersialisasi PLTP baru resmi masuk pencatatan PDRB pada tahun 2026 sehingga belum tersedia data pembanding tahun 2025. Pada level Kategori B, agregat Pertambangan &amp; Penggalian mencatat YoY +11,09% dan CtoC +9,88%.
+        </div>
+      </div>
+
+      <!-- 3 SEPARATED GROWTH CHARTS FOR LAPANGAN USAHA -->
+      <div class="matrix-3-grid">
+        <div class="figure-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="card-title">Matriks QoQ (%) — Lapangan Usaha</h3>
+              <span class="chart-subtitle">Q3-2026 TERHADAP Q2-2026 (KHUSUS QoQ)</span>
+            </div>
+            <span class="tag tag-neg">PDRB: -0,33%</span>
+          </div>
+          <div class="chart-box-tall">
+            <canvas id="chart-lu-qoq"></canvas>
+          </div>
+        </div>
+
+        <div class="figure-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="card-title">Matriks YoY (%) — Lapangan Usaha</h3>
+              <span class="chart-subtitle">Q3-2026 TERHADAP Q3-2025 (KHUSUS YoY)</span>
+            </div>
+            <span class="tag tag-pos">PDRB: +4,81%</span>
+          </div>
+          <div class="chart-box-tall">
+            <canvas id="chart-lu-yoy"></canvas>
+          </div>
+        </div>
+
+        <div class="figure-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="card-title">Matriks CtoC (%) — Lapangan Usaha</h3>
+              <span class="chart-subtitle">KUMULATIF Q1–Q3 2026 VS 2025 (KHUSUS CtoC)</span>
+            </div>
+            <span class="tag tag-pos">PDRB: +5,29%</span>
+          </div>
+          <div class="chart-box-tall">
+            <canvas id="chart-lu-ctoc"></canvas>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 03. SISI PENGELUARAN -->
-    <section id="sec-pengeluaran" aria-labelledby="h-pengeluaran">
+    <!-- SECTION 03: CHARTS SISI PENGELUARAN -->
+    <section id="sec-viz-peng" aria-labelledby="h-viz-peng">
       <div class="dossier-bar">
         <div class="dossier-bar-left">
-          <span class="dossier-pill">03</span>
-          <span class="dossier-meta">SISI PENGELUARAN (PERMINTAAN AKHIR) · KOMPARASI INTERNAL PENGELUARAN</span>
+          <span class="dossier-pill">03 · VISUAL SISI PENGELUARAN</span>
+          <span class="dossier-meta">MATRIKS TERPISAH KHUSUS PERMINTAAN AKHIR (PK-RT, PMTB, PK-P, EKSPOR-IMPOR)</span>
         </div>
-        <span class="dossier-meta">18 KOMPONEN &amp; SUBKOMPONEN UTUH</span>
       </div>
-      <h2 id="h-pengeluaran" class="section-heading">Komposisi Permintaan Akhir &amp; Laju Pertumbuhan Pengeluaran</h2>
-      <p class="section-deck">
-        Perbandingan khusus antar-komponen Sisi Pengeluaran. Konsumsi Rumah Tangga (50,61%) dan Pembentukan Modal Tetap Bruto (29,49%) mendominasi permintaan domestik, ditopang surplus Net Ekspor sebesar 11,12%.
-      </p>
+      <h2 id="h-viz-peng" class="section-title">Komposisi &amp; Matriks Pertumbuhan Sisi Pengeluaran</h2>
+      <p class="section-desc">Menampilkan porsi dan dinamika permintaan akhir secara terpisah dari sisi Lapangan Usaha, dengan tiga grafik pertumbuhan independen (QoQ, YoY, CtoC).</p>
 
-      <div class="analytics-grid" style="margin-top: var(--space-md);">
-        <!-- Chart 3: Share ADHB Pengeluaran -->
-        <div class="figure-card">
-          <div class="panel-header">
-            <div>
-              <h3 class="panel-title" id="peng-share-title">Komposisi Share ADHB (%) — Sisi Pengeluaran</h3>
-              <p class="panel-subtitle" id="peng-share-sub">Komponen pembentuk PDRB Pengeluaran (Total 100,00%)</p>
-            </div>
-            <div class="segmented-group" role="group" aria-label="Tampilan Share Pengeluaran">
-              <button type="button" class="seg-btn active" id="btn-peng-share-main" onclick="setPengShareMode('main')">Komponen Utama</button>
-              <button type="button" class="seg-btn" id="btn-peng-share-pkrt" onclick="setPengShareMode('pkrt')">Rincian PK-RT (1.a–1.g)</button>
-            </div>
+      <div class="matrix-rule-banner">
+        <div>
+          <strong>Isolasi Outlier Inventori:</strong> Perubahan Inventori memiliki persentase volatilitas tinggi (QoQ +57,87%, YoY +363,27%) karena basis nilai kecil/negatif. Aktifkan opsi di kanan bila ingin menampilkannya pada grafik pertumbuhan.
+        </div>
+        <button type="button" class="btn-pill" id="btn-toggle-inv" onclick="toggleInventoriInCharts()">Sertakan Inventori: Nonaktif</button>
+      </div>
+
+      <div class="figure-card">
+        <div class="chart-header">
+          <div>
+            <h3 class="card-title">Struktur Permintaan Akhir &amp; Arus Perdagangan (% Share terhadap PDRB ADHB)</h3>
+            <span class="chart-subtitle">SISI PENGELUARAN · PK-RT 50,61% · PMTB 29,49% · NET EKSPOR +11,12% (EKSPOR 93,24% − IMPOR 82,12%)</span>
           </div>
-          <div class="chart-box-compact">
-            <canvas id="chart-peng-share" aria-label="Grafik Share ADHB Sisi Pengeluaran"></canvas>
-          </div>
-          <div class="trade-strip" aria-label="Arus Ekspor Impor Bruto dan Net Ekspor">
-            <div class="trade-mini">
-              <div class="trade-mini-title">6. Ekspor Barang &amp; Jasa</div>
-              <div class="trade-mini-val">Rp 2.140.940,12 Jt</div>
-              <span class="badge badge-pos">Share 93,24% · YoY +5,84%</span>
-            </div>
-            <div class="trade-mini">
-              <div class="trade-mini-title">7. Impor Barang &amp; Jasa</div>
-              <div class="trade-mini-val">Rp 1.885.585,72 Jt</div>
-              <span class="badge badge-info">Share 82,12% · YoY +7,31%</span>
-            </div>
-            <div class="trade-mini">
-              <div class="trade-mini-title">8. Net Ekspor (6 − 7)</div>
-              <div class="trade-mini-val">Rp 255.354,40 Jt</div>
-              <span class="badge badge-warn">Share 11,12% · QoQ +30,73%</span>
-            </div>
+          <div class="filter-pills" role="group" aria-label="Mode komposisi pengeluaran">
+            <button type="button" class="btn-pill active" id="btn-peng-struct-share" onclick="setPengStructureMode('share')">Share PDRB (%)</button>
+            <button type="button" class="btn-pill" id="btn-peng-struct-val" onclick="setPengStructureMode('value')">ADHB vs ADHK (Miliar Rp)</button>
           </div>
         </div>
+        <div class="chart-box-compact">
+          <canvas id="chart-peng-structure"></canvas>
+        </div>
+      </div>
 
-        <!-- Chart 4: Pertumbuhan Pengeluaran (Strictly 1 metric at a time) -->
+      <!-- 3 SEPARATED GROWTH CHARTS FOR PENGELUARAN -->
+      <div class="matrix-3-grid">
         <div class="figure-card">
-          <div class="panel-header">
+          <div class="chart-header">
             <div>
-              <h3 class="panel-title" id="peng-growth-title">Komparasi Pertumbuhan YoY (%) — Sisi Pengeluaran</h3>
-              <p class="panel-subtitle" id="peng-growth-sub">Hanya menampilkan metrik YoY (Q3-2026 vs Q3-2025) antar-komponen pengeluaran</p>
+              <h3 class="card-title">Matriks QoQ (%) — Pengeluaran</h3>
+              <span class="chart-subtitle">Q3-2026 TERHADAP Q2-2026 (KHUSUS QoQ)</span>
             </div>
-          </div>
-          <div class="controls-row">
-            <div class="field-group">
-              <span class="field-label">Dimensi Pertumbuhan (Terpisah)</span>
-              <div class="segmented-group" role="group" aria-label="Pilih Dimensi Pertumbuhan Pengeluaran">
-                <button type="button" class="seg-btn" id="btn-peng-qoq" onclick="setPengMetric('qoq')">QoQ (%)</button>
-                <button type="button" class="seg-btn active" id="btn-peng-yoy" onclick="setPengMetric('yoy')">YoY (%)</button>
-                <button type="button" class="seg-btn" id="btn-peng-ctoc" onclick="setPengMetric('ctoc')">CtoC (%)</button>
-              </div>
-            </div>
-            <div class="field-group">
-              <span class="field-label">Kelompok Komponen</span>
-              <div class="segmented-group" role="group" aria-label="Pilih Kelompok Pengeluaran">
-                <button type="button" class="seg-btn active" id="btn-peng-scope-main" onclick="setPengScope('main')">Utama (1–8)</button>
-                <button type="button" class="seg-btn" id="btn-peng-scope-sub" onclick="setPengScope('sub')">Sub PK-RT &amp; PMTB</button>
-              </div>
-            </div>
-            <label class="checkbox-label" id="wrap-chk-inv">
-              <input type="checkbox" id="chk-include-inv" onchange="toggleInventori(this.checked)">
-              <span>Sertakan Inventori (Basis Ekstrem)</span>
-            </label>
+            <span class="tag tag-neg">PDRB: -0,33%</span>
           </div>
           <div class="chart-box">
-            <canvas id="chart-peng-growth" aria-label="Grafik Laju Pertumbuhan Sisi Pengeluaran"></canvas>
+            <canvas id="chart-peng-qoq"></canvas>
           </div>
-          <div class="aside-box" id="peng-inv-note">
-            <strong>Catatan Skala Perubahan Inventori:</strong> Komponen 5 (Perubahan Inventori) memiliki nilai nominal kecil negatif (-Rp 11.555,14 Jt) sehingga menghasilkan persentase basis kecil QoQ +57,87%, YoY +363,27%, dan CtoC -15,88%. Gunakan kotak centang di atas untuk memunculkan atau menyembunyikan batang Inventori agar komparasi komponen lainnya tetap terbaca jernih.
+        </div>
+
+        <div class="figure-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="card-title">Matriks YoY (%) — Pengeluaran</h3>
+              <span class="chart-subtitle">Q3-2026 TERHADAP Q3-2025 (KHUSUS YoY)</span>
+            </div>
+            <span class="tag tag-pos">PDRB: +4,81%</span>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-peng-yoy"></canvas>
+          </div>
+        </div>
+
+        <div class="figure-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="card-title">Matriks CtoC (%) — Pengeluaran</h3>
+              <span class="chart-subtitle">KUMULATIF Q1–Q3 2026 VS 2025 (KHUSUS CtoC)</span>
+            </div>
+            <span class="tag tag-pos">PDRB: +5,29%</span>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-peng-ctoc"></canvas>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 04. FENOMENA RIIL EKONOMI -->
+    <!-- SECTION 04: FULL 66-ROW TABLE LAPANGAN USAHA -->
+    <section id="sec-tbl-lu" aria-labelledby="h-tbl-lu">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="dossier-pill">04 · TABEL LENGKAP LAPANGAN USAHA</span>
+          <span class="dossier-meta">66 BARIS RINCIAN LENGKAP TANPA PEMOTONGAN · TERMASUK C.1 S.D. C.16</span>
+        </div>
+      </div>
+      <h2 id="h-tbl-lu" class="section-title">Tabel Lengkap PDRB Menurut Lapangan Usaha (66 Baris)</h2>
+      <p class="section-desc">Menampilkan seluruh 17 kategori utama, subkategori tingkat 2 dan 3, seluruh 16 subkategori Industri Pengolahan (C.1 s.d. C.16), serta baris bernilai nol. Klik baris mana pun untuk melihat detail dan deflator implisitnya.</p>
+
+      <div class="explorer-toolbar">
+        <div class="control-field">
+          <label class="control-label" for="search-lu">Cari Kode atau Nama Lapangan Usaha</label>
+          <input type="search" id="search-lu" class="text-input" placeholder="Contoh: Sawit, CPO, C.10, Panas Bumi, Konstruksi…" oninput="renderLuTable()">
+        </div>
+
+        <div class="control-field" style="flex: 2 1 420px;">
+          <span class="control-label">Filter Cakupan Baris</span>
+          <div class="filter-pills" role="group" aria-label="Filter baris lapangan usaha">
+            <button type="button" class="btn-pill active" id="lu-f-all" onclick="setLuFilter('all')">Semua (66 Baris)</button>
+            <button type="button" class="btn-pill" id="lu-f-main" onclick="setLuFilter('main')">17 Kategori Utama</button>
+            <button type="button" class="btn-pill" id="lu-f-c" onclick="setLuFilter('catC')">Lengkap Industri C.1–C.16</button>
+            <button type="button" class="btn-pill" id="lu-f-a" onclick="setLuFilter('catA')">Rincian Pertanian A</button>
+            <button type="button" class="btn-pill" id="lu-f-pos" onclick="setLuFilter('posYoY')">Tumbuh YoY &gt; 0</button>
+            <button type="button" class="btn-pill" id="lu-f-zero" onclick="setLuFilter('zero')">Bernilai 0,00</button>
+          </div>
+        </div>
+
+        <div class="action-group">
+          <button type="button" class="btn btn-secondary" onclick="resetLuSort()">Reset Urutan KBLI</button>
+        </div>
+      </div>
+
+      <!-- Inline Selected Row Inspector -->
+      <div class="inspector-strip" id="lu-inspector" aria-live="polite">
+        <div>
+          <span class="tag tag-warm" id="lu-insp-code">A.1.e</span>
+          <h3 class="card-title" id="lu-insp-name" style="margin-top: var(--space-xs);">Perkebunan Tahunan / Sawit</h3>
+          <p id="lu-insp-note" style="margin: var(--space-xs) 0 0 0; font-size: 0.875rem; color: var(--on-surface-variant);">Klik baris mana saja pada tabel di bawah untuk memeriksa deflator implisit dan catatan fenomena sektor.</p>
+        </div>
+        <div class="inspector-metrics">
+          <div class="inspector-metric-item">
+            <span class="m-lbl">ADHB (Jt Rp)</span>
+            <span class="m-val" id="lu-insp-adhb">358.823,54</span>
+          </div>
+          <div class="inspector-metric-item">
+            <span class="m-lbl">ADHK (Jt Rp)</span>
+            <span class="m-val" id="lu-insp-adhk">185.865,25</span>
+          </div>
+          <div class="inspector-metric-item">
+            <span class="m-lbl">Share PDRB</span>
+            <span class="m-val" id="lu-insp-share">15,63%</span>
+          </div>
+          <div class="inspector-metric-item">
+            <span class="m-lbl">Deflator Implisit</span>
+            <span class="m-val" id="lu-insp-deflator">193,06</span>
+          </div>
+          <div class="inspector-metric-item">
+            <span class="m-lbl">QoQ / YoY / CtoC</span>
+            <span class="m-val" id="lu-insp-growth">+10,92% / +4,43% / +5,62%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-status">
+        <span id="lu-row-count">Menampilkan 66 dari 66 baris Lapangan Usaha</span>
+        <span id="lu-sort-status">Urutan: Hierarki Baku KBLI (Default)</span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="table-lu">
+          <thead>
+            <tr>
+              <th style="width: 86px;"><button type="button" class="sort-btn" onclick="sortLu('order')">Kode</button></th>
+              <th>Lapangan Usaha / Subkategori</th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortLu('adhb')">ADHB (Juta Rp) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortLu('adhk')">ADHK (Juta Rp) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortLu('share')">Share (%) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortLu('qoq')">QoQ (%) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortLu('yoy')">YoY (%) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortLu('ctoc')">CtoC (%) ↕</button></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-lu"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 05: FULL 18-ROW TABLE PENGELUARAN -->
+    <section id="sec-tbl-peng" aria-labelledby="h-tbl-peng">
+      <div class="dossier-bar">
+        <div class="dossier-bar-left">
+          <span class="dossier-pill">05 · TABEL LENGKAP PENGELUARAN</span>
+          <span class="dossier-meta">18 BARIS KOMPONEN PERMINTAAN AKHIR · REKONSILIASI 100%</span>
+        </div>
+      </div>
+      <h2 id="h-tbl-peng" class="section-title">Tabel Lengkap PDRB Menurut Pengeluaran (18 Baris)</h2>
+      <p class="section-desc">Menyajikan rincian lengkap pengeluaran konsumsi rumah tangga (1.a–1.g), PK-LNPRT, PK-P, PMTB (Bangunan &amp; Non-Bangunan), perubahan inventori, ekspor, impor, serta net ekspor.</p>
+
+      <div class="explorer-toolbar">
+        <div class="control-field">
+          <label class="control-label" for="search-peng">Cari Komponen Pengeluaran</label>
+          <input type="search" id="search-peng" class="text-input" placeholder="Contoh: PMTB, Makanan, Ekspor, Non-Bangunan…" oninput="renderPengTable()">
+        </div>
+
+        <div class="control-field" style="flex: 2 1 380px;">
+          <span class="control-label">Filter Komponen</span>
+          <div class="filter-pills" role="group" aria-label="Filter komponen pengeluaran">
+            <button type="button" class="btn-pill active" id="peng-f-all" onclick="setPengFilter('all')">Semua (18 Baris)</button>
+            <button type="button" class="btn-pill" id="peng-f-main" onclick="setPengFilter('main')">Komponen Utama</button>
+            <button type="button" class="btn-pill" id="peng-f-pkrt" onclick="setPengFilter('pkrt')">Rincian PK-RT (1.a–1.g)</button>
+            <button type="button" class="btn-pill" id="peng-f-pmtb" onclick="setPengFilter('pmtb')">PMTB &amp; Perdagangan</button>
+          </div>
+        </div>
+
+        <div class="action-group">
+          <button type="button" class="btn btn-secondary" onclick="resetPengSort()">Reset Urutan Baku</button>
+        </div>
+      </div>
+
+      <div class="table-status">
+        <span id="peng-row-count">Menampilkan 18 dari 18 baris Sisi Pengeluaran</span>
+        <span id="peng-sort-status">Urutan: Struktur Baku Neraca Pengeluaran</span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="table-peng">
+          <thead>
+            <tr>
+              <th style="width: 72px;"><button type="button" class="sort-btn" onclick="sortPeng('order')">Kode</button></th>
+              <th>Komponen Pengeluaran</th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('adhb')">ADHB (Juta Rp) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('adhk')">ADHK (Juta Rp) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('share')">Share (%) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('qoq')">QoQ (%) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('yoy')">YoY (%) ↕</button></th>
+              <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('ctoc')">CtoC (%) ↕</button></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-peng"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 06: EXECUTIVE PHENOMENA & METHODOLOGY -->
     <section id="sec-fenomena" aria-labelledby="h-fenomena">
       <div class="dossier-bar">
         <div class="dossier-bar-left">
-          <span class="dossier-pill">04</span>
-          <span class="dossier-meta">NARASI FENOMENA RIIL EKONOMI SOLOK SELATAN Q3-2026</span>
+          <span class="dossier-pill">06 · NARASI EKSEKUTIF FENOMENA</span>
+          <span class="dossier-meta">ANALISIS PENGAMATAN LAPANGAN &amp; CATATAN METODOLOGI SNA 2008</span>
         </div>
-        <span class="dossier-meta">PENGGERAK SEKTORAL &amp; PENGELUARAN</span>
       </div>
-      <h2 id="h-fenomena" class="section-heading">Lima Motor Utama Perekonomian Daerah Triwulan III-2026</h2>
-      <p class="section-deck">
-        Keterkaitan langsung antara dinamika lapangan di kecamatan sentra produksi, realisasi proyek infrastruktur strategis, hingga momentum kegiatan masyarakat dengan lonjakan indikator pada kedua sisi neraca PDRB.
-      </p>
+      <h2 id="h-fenomena" class="section-title">Fenomena Kunci &amp; Dinamika Ekonomi Triwulan III-2026</h2>
+      <p class="section-desc">Sintesis catatan faktual penggerak ekonomi Kabupaten Solok Selatan yang menjelaskan pergerakan indikator pada kedua sisi neraca.</p>
 
-      <div class="phenomena-grid" style="margin-top: var(--space-md);">
-        <article class="phenom-card">
-          <div class="phenom-top">
-            <span class="index-num">01 · PERKEBUNAN &amp; HILIRISASI</span>
-            <span class="badge badge-pos">QoQ +10,92%</span>
+      <div class="phenomena-grid">
+        <article class="figure-card phenomenon-card">
+          <div class="phenomenon-head">
+            <h3 class="card-title">Perkebunan Sawit (A.1.e)</h3>
+            <span class="index-num">01</span>
           </div>
-          <h3 class="phenom-title">Puncak Panen TBS Sawit di Sangir Balai Janggo</h3>
-          <p class="phenom-body">
-            Panen puncak Tandan Buah Segar (TBS) kelapa sawit di kawasan Sangir Balai Janggo disertai tingkat harga kompetitif di kisaran Rp 2.800–Rp 3.000/kg mendongkrak output subsektor Perkebunan Tahunan (A.1.e) secara triwulanan sekaligus memacu pengolahan minyak sawit mentah (CPO) di subsektor Industri Mamin (C.2).
-          </p>
-          <div class="phenom-metrics">
-            <span class="badge badge-info">A.1.e Share 15,63%</span>
-            <span class="badge badge-pos">C.2 QoQ +22,95%</span>
-            <span class="badge badge-pos">C.2 YoY +12,00%</span>
+          <div class="phenomenon-metrics">
+            <span class="tag tag-pos">QoQ +10,92%</span>
+            <span class="tag tag-info">Share 15,63%</span>
+            <span class="tag tag-warm">ADHB Rp 358,82 M</span>
           </div>
+          <p>Lonjakan signifikan triwulanan didorong <strong>panen puncak TBS Kelapa Sawit di Sangir Balai Janggo</strong> serta peningkatan produktivitas kebun rakyat dari realisasi program Peremajaan Sawit Rakyat (PSR / <em>Replanting</em>). Secara tahunan tumbuh +4,43% (YoY) dan kumulatif +5,62% (CtoC), tetap resilien meski terjadi koreksi harga TBS pada pertengahan triwulan (Agustus 2026).</p>
         </article>
 
-        <article class="phenom-card">
-          <div class="phenom-top">
-            <span class="index-num">02 · INFRASTRUKTUR PUBLIK</span>
-            <span class="badge badge-pos">CtoC +12,68%</span>
+        <article class="figure-card phenomenon-card">
+          <div class="phenomenon-head">
+            <h3 class="card-title">Panas Bumi &amp; Energi (B.1)</h3>
+            <span class="index-num">02</span>
           </div>
-          <h3 class="phenom-title">Proyek APBN Inpres Jalan Daerah (IJD) &amp; RSUD</h3>
-          <p class="phenom-body">
-            Pengerjaan fisik jalan strategis APBN Inpres Jalan Daerah (IJD) ruas Sungai Sungkai–Sungai Rumbai senilai Rp 100 Miliar serta pembangunan/renovasi fasilitas kesehatan RSUD Muara Labuh dan RSUD Batang Sangir menjaga momentum pertumbuhan tahunan Konstruksi (F) dan PMTB Bangunan (4.a).
-          </p>
-          <div class="phenom-metrics">
-            <span class="badge badge-pos">F YoY +7,95%</span>
-            <span class="badge badge-pos">4.a YoY +6,69%</span>
-            <span class="badge badge-pos">4.a CtoC +15,07%</span>
+          <div class="phenomenon-metrics">
+            <span class="tag tag-pos">QoQ +2,47%</span>
+            <span class="tag tag-warm">ADHB Rp 144,29 M</span>
+            <span class="tag tag-info">YoY &amp; CtoC: —</span>
           </div>
+          <p>Subkategori Pertambangan Minyak, Gas &amp; Panas Bumi mencatat ADHB <strong>Rp 144.290,55 Juta</strong> (Share 6,28%) dengan pertumbuhan QoQ <strong>+2,47%</strong>. Laju YoY dan CtoC disajikan dengan tanda strip (<strong>—</strong>) karena secara metodologi pencatatan komersialisasi penuh proyek panas bumi PT Supreme Energy Muara Laboh (SEML) baru masuk seri 2026 sehingga belum memiliki basis pembanding tahun 2025, sementara konstruksi EPC Unit 2 (80 MW, progres &gt;70%) dan operasional Unit 1 (86 MW) terus berakselerasi.</p>
         </article>
 
-        <article class="phenom-card">
-          <div class="phenom-top">
-            <span class="index-num">03 · KONSUMSI &amp; PARIWISATA</span>
-            <span class="badge badge-pos">CtoC +18,55%</span>
+        <article class="figure-card phenomenon-card">
+          <div class="phenomenon-head">
+            <h3 class="card-title">Industri Pengolahan &amp; CPO (C.2 / C.1–C.16)</h3>
+            <span class="index-num">03</span>
           </div>
-          <h3 class="phenom-title">Pesta Rakyat 17 Agustus, Pasar Malam &amp; CFD Padang Aro</h3>
-          <p class="phenom-body">
-            Geliat event kemasyarakatan pada perayaan HUT RI ke-81, Pasar Malam di Sangir Balai Janggo, dan rutinitas Car Free Day (CFD) di RTH Padang Aro memperluas perputaran UMKM kuliner, jasa akomodasi, serta pengeluaran rumah tangga kelompok Hotel &amp; Restoran (1.f).
-          </p>
-          <div class="phenom-metrics">
-            <span class="badge badge-pos">I.2 Restoran YoY +15,87%</span>
-            <span class="badge badge-pos">I.2 CtoC +18,55%</span>
-            <span class="badge badge-pos">1.f PK-RT YoY +7,91%</span>
+          <div class="phenomenon-metrics">
+            <span class="tag tag-pos">C.2 QoQ +22,95%</span>
+            <span class="tag tag-pos">C.2 YoY +12,00%</span>
+            <span class="tag tag-info">Kat. C Share 4,58%</span>
           </div>
+          <p>Kategori C tumbuh kuat <strong>+11,86% QoQ</strong> dan <strong>+7,29% YoY</strong>. Motor utamanya <strong>C.2 Industri Makanan &amp; Minuman (CPO)</strong> dengan lonjakan <strong>+22,95% QoQ</strong> dan <strong>+12,00% YoY</strong> seiring puncak pengolahan CPO di PKS dan semarak kuliner Pesta Rakyat 17 Agustus. Subkategori penunjang lain meliputi <strong>C.10 Barang Galian Bukan Logam</strong> (+9,31% QoQ dari produksi batako/paving proyek trotoar), sementara <strong>C.9 Karet &amp; Plastik</strong> terkoreksi -13,67% QoQ akibat pelemahan harga karet mentah, serta 4 subkategori (C.1, C.3, C.11, C.13) tercatat 0,00.</p>
         </article>
 
-        <article class="phenom-card">
-          <div class="phenom-top">
-            <span class="index-num">04 · ENERGI TERBARUKAN</span>
-            <span class="badge badge-pos">YoY +32,34%</span>
+        <article class="figure-card phenomenon-card">
+          <div class="phenomenon-head">
+            <h3 class="card-title">Konstruksi (F) &amp; Infrastruktur</h3>
+            <span class="index-num">04</span>
           </div>
-          <h3 class="phenom-title">Operasional PLTP Supreme Energy Unit 1 (86 MW)</h3>
-          <p class="phenom-body">
-            Beroperasinya Pembangkit Listrik Tenaga Panas Bumi (PLTP) Muara Laboh Unit 1 berkapasitas 86 MW memperkuat pasokan energi daerah serta mendorong lonjakan tajam pada Kategori D (Pengadaan Listrik dan Gas), sementara B.1 Panas Bumi menyumbang Rp 144.290,55 Juta (6,28% PDRB).
-          </p>
-          <div class="phenom-metrics">
-            <span class="badge badge-pos">D QoQ +14,42%</span>
-            <span class="badge badge-pos">D CtoC +17,13%</span>
-            <span class="badge badge-info">B.1 QoQ +2,47%</span>
+          <div class="phenomenon-metrics">
+            <span class="tag tag-pos">YoY +7,95%</span>
+            <span class="tag tag-pos">CtoC +12,68%</span>
+            <span class="tag tag-neg">QoQ -8,71%</span>
           </div>
+          <p>Dengan porsi <strong>12,03%</strong> terhadap PDRB (ADHB Rp 276.188,30 Juta), sektor Konstruksi tumbuh solid secara tahunan dan kumulatif berkat proyek jalan dukungan <strong>APBN Inpres Jalan Daerah (IJD) Rp 100 Miliar</strong>, peningkatan fasilitas <strong>RSUD Muara Labuh dan RSUD Batang Sangir</strong>, serta pembangunan fisik Pabrik Kelapa Sawit (PKS) PT MUS. Kontraksi QoQ -8,71% dipicu efisiensi pagu APBD 2026 (-13,43%) dan sejumlah proyek penghubung Solok Selatan–Dharmasraya yang masih dalam tahap lelang/awal pengerjaan.</p>
         </article>
 
-        <article class="phenom-card">
-          <div class="phenom-top">
-            <span class="index-num">05 · INVESTASI BARANG MODAL</span>
-            <span class="badge badge-pos">YoY +17,23%</span>
+        <article class="figure-card phenomenon-card">
+          <div class="phenomenon-head">
+            <h3 class="card-title">Restoran &amp; Makan Minum (I.2)</h3>
+            <span class="index-num">05</span>
           </div>
-          <h3 class="phenom-title">Belanja Modal Mesin, Alat Berat &amp; Replanting</h3>
-          <p class="phenom-body">
-            Penambahan peralatan teknis, mesin pabrik dan alat berat konstruksi maupun perkebunan serta keberlanjutan program peremajaan sawit (replanting) memacu komponen PMTB Non-Bangunan (4.b) tumbuh konsisten di atas 17% baik secara tahunan maupun kumulatif.
-          </p>
-          <div class="phenom-metrics">
-            <span class="badge badge-pos">4.b CtoC +17,02%</span>
-            <span class="badge badge-pos">4.b QoQ +0,27%</span>
-            <span class="badge badge-info">Share 12,06%</span>
+          <div class="phenomenon-metrics">
+            <span class="tag tag-pos">CtoC +18,55%</span>
+            <span class="tag tag-pos">YoY +15,87%</span>
+            <span class="tag tag-pos">QoQ +1,72%</span>
           </div>
+          <p>Subkategori Penyediaan Makan Minum mencatat laju kumulatif tertinggi (<strong>+18,55% CtoC</strong>; ADHB Rp 23.346,65 Juta). Pertumbuhan ini selaras dengan meningkatnya belanja rumah tangga kelompok Hotel &amp; Restoran (komponen 1.f tumbuh +7,91% YoY), ekspansi UMKM kuliner lokal, serta tingginya mobilitas masyarakat pada rangkaian kegiatan HUT RI ke-81 di bulan Agustus 2026.</p>
+        </article>
+
+        <article class="figure-card phenomenon-card">
+          <div class="phenomenon-head">
+            <h3 class="card-title">PMTB Non-Bangunan (4.b) &amp; Investasi</h3>
+            <span class="index-num">06</span>
+          </div>
+          <div class="phenomenon-metrics">
+            <span class="tag tag-pos">YoY +17,23%</span>
+            <span class="tag tag-pos">CtoC +17,02%</span>
+            <span class="tag tag-warm">Share 12,06%</span>
+          </div>
+          <p>Pembentukan Modal Tetap Bruto (PMTB) Non-Bangunan mencapai ADHB <strong>Rp 277.019,92 Juta</strong> dengan akselerasi <strong>+17,23% YoY</strong>. Kinerja ini digerakkan oleh <strong>pengadaan mesin, alat berat, perlengkapan teknis proyek energi dan pabrik</strong>, pengadaan unit ambulans serta alat kesehatan rumah sakit daerah, sekaligus keberlanjutan investasi biologis (<em>Cultivated Biological Resources</em>) pada peremajaan dan perluasan kebun sawit.</p>
         </article>
       </div>
-    </section>
 
-    <!-- 05. TABEL DATA LENGKAP INTERAKTIF -->
-    <section id="sec-tabel" aria-labelledby="h-tabel">
-      <div class="dossier-bar">
-        <div class="dossier-bar-left">
-          <span class="dossier-pill">05</span>
-          <span class="dossier-meta">PENJELAJAH TABEL DATA REKONSILIASI RESMI</span>
-        </div>
-        <span class="dossier-meta">PENCARIAN, FILTER &amp; EKSPOR CSV</span>
-      </div>
-      <h2 id="h-tabel" class="section-heading">Tabel Rincian Lengkap Sisi Lapangan Usaha &amp; Sisi Pengeluaran</h2>
-      <p class="section-deck">
-        Gunakan filter dan pengurutan kolom di bawah ini untuk menelusuri seluruh angka ADHB, ADHK 2010, kontribusi (Share %), serta pertumbuhan QoQ, YoY, dan CtoC masing-masing sisi secara terpisah.
-      </p>
-
-      <!-- TABEL A: LAPANGAN USAHA -->
-      <div class="figure-card" style="margin-top: var(--space-md);">
-        <div class="panel-header">
+      <div class="aside-box" style="margin-top: var(--space-lg);">
+        <h3 class="card-title">Catatan Metodologi SNA 2008 &amp; Konsistensi Neraca</h3>
+        <div class="split-2-grid" style="margin-top: var(--space-sm);">
           <div>
-            <h3 class="panel-title">Tabel 5A. PDRB Menurut Lapangan Usaha — Triwulan III-2026</h3>
-            <p class="panel-subtitle">Menampilkan seluruh 17 Kategori Utama (A–U) &amp; 9 Subsektor Strategis Rekon Resmi (bagian dari klasifikasi 66 baris PDRB) · Satuan: Juta Rp</p>
+            <p style="margin: 0; font-size: 0.875rem;">
+              <strong>Valuasi &amp; Tabel Supply-Use (SUT):</strong> Output produksi lapangan usaha dinilai pada <em>Basic Price</em> (Harga Dasar), sementara pengeluaran konsumsi akhir dan PMTB dinilai pada <em>Purchaser's Price</em> (Harga Pembeli) setelah memperhitungkan <em>Trade and Transport Margin</em> (TTM) serta pajak dikurangi subsidi atas produk (SNA 2008: 6.69). Produk perkebunan tahunan dan peternakan juga mengimplementasikan perlakuan <em>Work-in-Progress</em> (WIP) serta <em>Cultivated Biological Resources</em> (CBR).
+            </p>
           </div>
-          <button type="button" class="btn-secondary" onclick="exportTableCsv('lapus')">Unduh CSV Lapangan Usaha</button>
-        </div>
-
-        <div class="filter-bar">
-          <div class="field-group">
-            <label class="field-label" for="search-lapus">Cari Kode atau Nama Lapangan Usaha</label>
-            <input type="search" id="search-lapus" class="input-control" placeholder="Misal: Sawit, Konstruksi, B.1, Listrik…" oninput="renderLapusTable()">
-          </div>
-          <div class="field-group">
-            <label class="field-label" for="filter-lapus">Filter Kelompok / Kinerja</label>
-            <select id="filter-lapus" class="select-control" onchange="renderLapusTable()">
-              <option value="all">Semua Baris (17 Kategori + 9 Subsektor)</option>
-              <option value="parent">Hanya 17 Kategori Utama (A–U)</option>
-              <option value="sub">Hanya 9 Subsektor Strategis</option>
-              <option value="yoy-pos">Pertumbuhan YoY Positif (&gt; 0%)</option>
-              <option value="qoq-neg">Terkontraksi QoQ (&lt; 0%)</option>
-            </select>
-          </div>
-          <button type="button" class="btn-secondary" onclick="resetLapusFilters()">Reset Filter</button>
-        </div>
-
-        <div class="table-wrap">
-          <table class="data-table" id="table-lapus">
-            <thead>
-              <tr>
-                <th><button type="button" class="sort-btn" onclick="sortLapus('code')">Kode &amp; Uraian Lapangan Usaha ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortLapus('adhb')">ADHB (Jt Rp) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortLapus('adhk')">ADHK (Jt Rp) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortLapus('share')">Share (%) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortLapus('qoq')">QoQ (%) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortLapus('yoy')">YoY (%) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortLapus('ctoc')">CtoC (%) ⇅</button></th>
-              </tr>
-            </thead>
-            <tbody id="tbody-lapus"></tbody>
-          </table>
-          <div id="empty-lapus" class="empty-state">
-            <p>Tidak ada baris Lapangan Usaha yang cocok dengan pencarian atau filter Anda.</p>
-            <button type="button" class="btn-primary" onclick="resetLapusFilters()">Tampilkan Semua Data</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- TABEL B: PENGELUARAN -->
-      <div class="figure-card" style="margin-top: var(--space-lg);">
-        <div class="panel-header">
           <div>
-            <h3 class="panel-title">Tabel 5B. PDRB Menurut Pengeluaran — Triwulan III-2026</h3>
-            <p class="panel-subtitle">18 Baris Utuh (Komponen Utama 1–8, Subkomponen 1.a–1.g &amp; 4.a–4.b, serta Total PDRB) · Satuan: Juta Rp</p>
-          </div>
-          <button type="button" class="btn-secondary" onclick="exportTableCsv('peng')">Unduh CSV Pengeluaran</button>
-        </div>
-
-        <div class="filter-bar">
-          <div class="field-group">
-            <label class="field-label" for="search-peng">Cari Kode atau Komponen Pengeluaran</label>
-            <input type="search" id="search-peng" class="input-control" placeholder="Misal: PMTB, Makanan, Ekspor, 1.f…" oninput="renderPengTable()">
-          </div>
-          <div class="field-group">
-            <label class="field-label" for="filter-peng">Filter Kelompok Komponen</label>
-            <select id="filter-peng" class="select-control" onchange="renderPengTable()">
-              <option value="all">Semua 18 Baris Utuh</option>
-              <option value="main">Hanya Komponen Utama (1–8)</option>
-              <option value="pkrt">Subkomponen PK-RT (1.a–1.g)</option>
-              <option value="pmtb">Subkomponen PMTB (4.a–4.b)</option>
-            </select>
-          </div>
-          <button type="button" class="btn-secondary" onclick="resetPengFilters()">Reset Filter</button>
-        </div>
-
-        <div class="table-wrap">
-          <table class="data-table" id="table-peng">
-            <thead>
-              <tr>
-                <th><button type="button" class="sort-btn" onclick="sortPeng('code')">Kode &amp; Komponen Pengeluaran ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('adhb')">ADHB (Jt Rp) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('adhk')">ADHK (Jt Rp) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('share')">Share (%) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('qoq')">QoQ (%) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('yoy')">YoY (%) ⇅</button></th>
-                <th class="num"><button type="button" class="sort-btn" onclick="sortPeng('ctoc')">CtoC (%) ⇅</button></th>
-              </tr>
-            </thead>
-            <tbody id="tbody-peng"></tbody>
-          </table>
-          <div id="empty-peng" class="empty-state">
-            <p>Tidak ada komponen Pengeluaran yang cocok dengan pencarian atau filter Anda.</p>
-            <button type="button" class="btn-primary" onclick="resetPengFilters()">Tampilkan Semua Data</button>
+            <p style="margin: 0; font-size: 0.875rem;">
+              <strong>Indeks Harga Implisit &amp; PDRB Tanpa Migas:</strong> Deflator implisit PDRB Triwulan III-2026 tercatat sebesar <strong>182,68</strong> (<code>(2.296.186,42 / 1.256.915,88) × 100</code>). Untuk analisis sensitivitas struktur ekonomi tanpa faktor energi migas/panas bumi, PDRB Tanpa Migas pada periode yang sama tumbuh <strong>+1,03% YoY</strong>, <strong>+1,55% CtoC</strong>, dan terkontraksi <strong>-0,43% QoQ</strong>.
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 06. METODOLOGI & CATATAN -->
-    <section id="sec-metode" aria-labelledby="h-metode">
-      <div class="dossier-bar">
-        <div class="dossier-bar-left">
-          <span class="dossier-pill">06</span>
-          <span class="dossier-meta">CATATAN METODOLOGI &amp; DEFINISI</span>
-        </div>
+    <footer>
+      <div>
+        <strong>Sumber Data &amp; Referensi Metodologi:</strong> Badan Pusat Statistik (BPS) Kabupaten Solok Selatan — Fenomena PDRB Lapangan Usaha &amp; Pengeluaran Triwulan III-2026; Kerangka SNA 2008 &amp; Penyusunan Tabel Supply-Use (SUT); Laporan Progres PLTP Muara Laboh PT Supreme Energy; SPSE Kabupaten Solok Selatan.
       </div>
-      <h2 id="h-metode" class="section-heading">Kaidah Penghitungan &amp; Catatan Teknis</h2>
-      <div class="aside-box">
-        <p style="margin-top: 0;">
-          <strong>1. Prinsip Rekonsiliasi Dua Sisi (SNA 2008):</strong> Penghitungan PDRB Atas Dasar Harga Berlaku (ADHB) dan Atas Dasar Harga Konstan 2010 (ADHK) Kabupaten Solok Selatan Triwulan III-2026 diselaraskan antara pendekatan produksi (Nilai Tambah Bruto 17 kategori Lapangan Usaha) dan pendekatan pengeluaran akhir (PK-RT, PK-LNPRT, PK-P, PMTB, Perubahan Inventori, dan Net Ekspor), menghasilkan total agregat serta laju pertumbuhan yang identik di kedua sisi.
-        </p>
-        <p>
-          <strong>2. Definisi Dimensi Pertumbuhan:</strong> <em>QoQ (Quarter-to-Quarter)</em> membandingkan ADHK Triwulan III-2026 terhadap Triwulan II-2026; <em>YoY (Year-on-Year)</em> membandingkan ADHK Triwulan III-2026 terhadap Triwulan III-2025; <em>CtoC (Cumulative-to-Cumulative)</em> membandingkan akumulasi ADHK Triwulan I–III 2026 terhadap Triwulan I–III 2025.
-        </p>
-        <p style="margin-bottom: 0;">
-          <strong>3. Perlakuan Khusus B.1 Panas Bumi (Supreme Energy):</strong> Subkategori B.1 (Pertambangan Minyak, Gas dan Panas Bumi) memiliki laju YoY dan CtoC bernilai <code>"-"</code> karena komersialisasi PLTP Muara Laboh baru resmi masuk ke dalam pencatatan PDRB pada tahun 2026, sehingga belum memiliki seri pembanding tahun dasar 2025.
-        </p>
-      </div>
-    </section>
-
-    <footer class="report-footer">
-      <span>Sumber: Data Rekonsiliasi Resmi PDRB Kabupaten Solok Selatan Triwulan III-2026 (Sisi Lapangan Usaha &amp; Sisi Pengeluaran).</span>
-      <span>Satuan Nilai: Juta Rupiah (Jt Rp) · Tahun Dasar ADHK: 2010 = 100</span>
+      <div class="dossier-meta">REKONSILIASI TERVERIFIKASI · Q3-2026</div>
     </footer>
   </div>
 
+  <api-shim></api-shim>
   <script>
     // =========================================================================
-    // 1. DATASET RESMI REKONSILIASI PDRB KAB. SOLOK SELATAN Q3-2026
+    // 1. DATASET LENGKAP SISI LAPANGAN USAHA (66 BARIS PRESISI)
     // =========================================================================
-    const lapusData = [
-      { code: `A`, name: `Pertanian, Kehutanan, dan Perikanan`, level: `parent`, adhb: 671002.04, adhk: 358111.99, share: 29.22, qoq: 3.50, yoy: 4.75, ctoc: 3.84 },
-      { code: `A.1.e`, name: `Perkebunan Tahunan (Sawit)`, level: `sub`, adhb: 358823.54, adhk: 185865.25, share: 15.63, qoq: 10.92, yoy: 4.43, ctoc: 5.62 },
-      { code: `A.1.a`, name: `Tanaman Pangan`, level: `sub`, adhb: 159505.37, adhk: 89831.61, share: 6.95, qoq: -0.19, yoy: 7.60, ctoc: 0.03 },
-      { code: `B`, name: `Pertambangan dan Penggalian`, level: `parent`, adhb: 253100.90, adhk: 103546.27, share: 11.02, qoq: 1.32, yoy: 11.09, ctoc: 9.88 },
-      { code: `B.1`, name: `Pertambangan Minyak, Gas & Panas Bumi (Supreme Energy)`, level: `sub`, adhb: 144290.55, adhk: 45433.16, share: 6.28, qoq: 2.47, yoy: null, ctoc: null, note: `Komersialisasi PLTP resmi masuk PDRB 2026` },
-      { code: `B.4`, name: `Tambang Galian C`, level: `sub`, adhb: 108810.01, adhk: 58113.04, share: 4.74, qoq: 0.43, yoy: -37.65, ctoc: -37.45 },
-      { code: `C`, name: `Industri Pengolahan`, level: `parent`, adhb: 105067.13, adhk: 63088.43, share: 4.58, qoq: 11.86, yoy: 7.29, ctoc: 5.33 },
-      { code: `C.2`, name: `Industri Makanan & Minuman (CPO/Kuliner)`, level: `sub`, adhb: 60867.42, adhk: 34935.93, share: 2.65, qoq: 22.95, yoy: 12.00, ctoc: 9.30 },
-      { code: `D`, name: `Pengadaan Listrik dan Gas`, level: `parent`, adhb: 939.86, adhk: 565.11, share: 0.04, qoq: 14.42, yoy: 32.34, ctoc: 17.13 },
-      { code: `E`, name: `Pengadaan Air & Pengelolaan Sampah`, level: `parent`, adhb: 1026.40, adhk: 642.54, share: 0.04, qoq: 0.63, yoy: 3.71, ctoc: 2.34 },
-      { code: `F`, name: `Konstruksi`, level: `parent`, adhb: 276188.30, adhk: 151426.68, share: 12.03, qoq: -8.71, yoy: 7.95, ctoc: 12.68 },
-      { code: `G`, name: `Perdagangan Besar & Eceran; Otomotif`, level: `parent`, adhb: 471441.43, adhk: 270426.70, share: 20.53, qoq: 2.26, yoy: 4.03, ctoc: 4.93 },
-      { code: `G.1`, name: `Perdagangan Mobil, Motor & Reparasi`, level: `sub`, adhb: 12530.79, adhk: 6266.26, share: 0.55, qoq: 18.59, yoy: 8.32, ctoc: 6.03 },
-      { code: `G.2`, name: `Perdagangan Eceran Bukan Otomotif`, level: `sub`, adhb: 458910.64, adhk: 264160.44, share: 19.99, qoq: 1.93, yoy: 3.93, ctoc: 4.91 },
-      { code: `H`, name: `Transportasi dan Pergudangan`, level: `parent`, adhb: 129162.62, adhk: 75509.91, share: 5.62, qoq: -5.92, yoy: 0.37, ctoc: 2.08 },
-      { code: `H.4`, name: `Angkutan Penyeberangan`, level: `sub`, adhb: 346.55, adhk: 179.26, share: 0.02, qoq: 16.63, yoy: 4.69, ctoc: -1.22 },
-      { code: `I`, name: `Penyediaan Akomodasi dan Makan Minum`, level: `parent`, adhb: 23478.19, adhk: 11524.71, share: 1.02, qoq: 1.69, yoy: 15.77, ctoc: 18.45 },
-      { code: `I.2`, name: `Penyediaan Makan Minum (Restoran)`, level: `sub`, adhb: 23346.65, adhk: 11463.10, share: 1.02, qoq: 1.72, yoy: 15.87, ctoc: 18.55 },
-      { code: `J`, name: `Informasi dan Komunikasi`, level: `parent`, adhb: 115484.19, adhk: 91838.65, share: 5.03, qoq: -2.27, yoy: 1.86, ctoc: 2.15 },
-      { code: `K`, name: `Jasa Keuangan dan Asuransi`, level: `parent`, adhb: 16362.11, adhk: 9531.81, share: 0.71, qoq: -2.72, yoy: -1.32, ctoc: 1.96 },
-      { code: `L`, name: `Real Estate`, level: `parent`, adhb: 18717.71, adhk: 10840.52, share: 0.81, qoq: 1.57, yoy: 1.75, ctoc: 3.20 },
-      { code: `M,N`, name: `Jasa Perusahaan`, level: `parent`, adhb: 312.96, adhk: 191.80, share: 0.01, qoq: 1.80, yoy: 2.03, ctoc: 2.77 },
-      { code: `O`, name: `Administrasi Pemerintahan`, level: `parent`, adhb: 93097.43, adhk: 44519.85, share: 4.05, qoq: -17.67, yoy: -2.20, ctoc: -1.62 },
-      { code: `P`, name: `Jasa Pendidikan`, level: `parent`, adhb: 58777.44, adhk: 30921.84, share: 2.56, qoq: 0.68, yoy: 3.15, ctoc: 4.30 },
-      { code: `Q`, name: `Jasa Kesehatan dan Kegiatan Sosial`, level: `parent`, adhb: 30309.33, adhk: 17493.74, share: 1.32, qoq: -0.91, yoy: 4.90, ctoc: 5.60 },
-      { code: `R,S,T,U`, name: `Jasa Lainnya`, level: `parent`, adhb: 31718.38, adhk: 16735.34, share: 1.38, qoq: 2.35, yoy: 4.50, ctoc: 4.42 }
+    const LU_DATA = [
+      { order: 1, code: `A`, name: `Pertanian, Kehutanan, dan Perikanan`, level: 1, cat: `A`, adhb: 671002.04, adhk: 358111.99, share: 29.22, qoq: 3.50, yoy: 4.75, ctoc: 3.84, note: `Kontributor terbesar PDRB (29,22%). Didorong panen puncak TBS sawit & percepatan panen padi sawah.` },
+      { order: 2, code: `A.1`, name: `Pertanian, Peternakan, Perburuan dan Jasa Pertanian`, level: 2, cat: `A`, adhb: 634124.66, adhk: 339814.81, share: 27.62, qoq: 3.49, yoy: 5.24, ctoc: 4.18, note: `Subsektor dominan dalam Kategori A (94,5% dari output kategori A).` },
+      { order: 3, code: `A.1.a`, name: `Tanaman Pangan`, level: 3, cat: `A`, adhb: 159505.37, adhk: 89831.61, share: 6.95, qoq: -0.19, yoy: 7.60, ctoc: 0.03, note: `Panen raya padi di sentra Sungai Pagu menopang pertumbuhan tahunan +7,60% YoY.` },
+      { order: 4, code: `A.1.b`, name: `Tanaman Hortikultura Semusim`, level: 3, cat: `A`, adhb: 8025.77, adhk: 4617.53, share: 0.35, qoq: -4.15, yoy: -1.03, ctoc: 0.40, note: `Fluktuasi pasokan cabai dan sayuran musiman antartriwulan.` },
+      { order: 5, code: `A.1.c`, name: `Perkebunan Semusim`, level: 3, cat: `A`, adhb: 14.47, adhk: 7.36, share: 0.00, qoq: 3.84, yoy: -2.90, ctoc: -0.47, note: `Skala relatif kecil (tebu/tembakau rakyat) dengan pertumbuhan QoQ +3,84%.` },
+      { order: 6, code: `A.1.d`, name: `Tanaman Hortikultura Tahunan`, level: 3, cat: `A`, adhb: 29914.34, adhk: 20766.02, share: 1.30, qoq: -17.97, yoy: 4.10, ctoc: 5.91, note: `Pola siklus buah tahunan pascapanen raya Q2 menyebabkan koreksi QoQ -17,97%, namun YoY +4,10%.` },
+      { order: 7, code: `A.1.e`, name: `Perkebunan Tahunan / Sawit`, level: 3, cat: `A`, adhb: 358823.54, adhk: 185865.25, share: 15.63, qoq: 10.92, yoy: 4.43, ctoc: 5.62, note: `Panen puncak TBS Kelapa Sawit di Sangir Balai Janggo & dampak program PSR mendorong lonjakan QoQ +10,92%.` },
+      { order: 8, code: `A.1.f`, name: `Peternakan`, level: 3, cat: `A`, adhb: 60819.14, adhk: 29178.32, share: 2.65, qoq: -6.68, yoy: 4.80, ctoc: 8.22, note: `Normalisasi populasi ternak potong pasca-Iduladha 1447 H (Q2) masuk fase restocking; CtoC tetap kuat +8,22%.` },
+      { order: 9, code: `A.1.g`, name: `Jasa Pertanian dan Perburuan`, level: 3, cat: `A`, adhb: 17022.04, adhk: 9548.72, share: 0.74, qoq: 1.63, yoy: 6.61, ctoc: 4.87, note: `Peningkatan sewa alsintan (power thresher, combine harvester, traktor) oleh Brigade Pangan.` },
+      { order: 10, code: `A.2`, name: `Kehutanan dan Penebangan Kayu`, level: 2, cat: `A`, adhb: 30518.59, adhk: 15293.68, share: 1.33, qoq: 3.95, yoy: -4.80, ctoc: -3.40, note: `Peningkatan tebangan musiman QoQ +3,95%, namun secara tahunan masih tertahan -4,80%.` },
+      { order: 11, code: `A.3`, name: `Perikanan`, level: 2, cat: `A`, adhb: 6358.79, adhk: 3003.50, share: 0.28, qoq: 2.55, yoy: 3.45, ctoc: 3.23, note: `Akumulasi produksi perikanan darat dan budidaya air tawar terjaga positif.` },
+
+      { order: 12, code: `B`, name: `Pertambangan dan Penggalian`, level: 1, cat: `B`, adhb: 253100.90, adhk: 103546.27, share: 11.02, qoq: 1.32, yoy: 11.09, ctoc: 9.88, note: `Tumbuh dua digit (+11,09% YoY) ditopang operasional & pengembangan panas bumi serta galian material konstruksi.` },
+      { order: 13, code: `B.1`, name: `Minyak, Gas & Panas Bumi (Supreme Energy)`, level: 2, cat: `B`, adhb: 144290.55, adhk: 45433.16, share: 6.28, qoq: 2.47, yoy: null, ctoc: null, note: `Metodologi: Komersialisasi penuh baru masuk pencatatan tahun 2026 sehingga belum memiliki pembanding 2025 (YoY/CtoC strip).` },
+      { order: 14, code: `B.2`, name: `Pertambangan Batubara dan Lignit`, level: 2, cat: `B`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Tidak terdapat aktivitas pertambangan batubara komersial di Kabupaten Solok Selatan pada periode berjalan.` },
+      { order: 15, code: `B.3`, name: `Pertambangan Bijih Logam`, level: 2, cat: `B`, adhb: 0.34, adhk: 0.06, share: 0.00, qoq: 0.96, yoy: 0.60, ctoc: 3.40, note: `Aktivitas skala mikro/eksplorasi terbatas dengan pertumbuhan positif moderat.` },
+      { order: 16, code: `B.4`, name: `Pertambangan & Penggalian Lainnya (Galian C / Pasir Batu)`, level: 2, cat: `B`, adhb: 108810.01, adhk: 58113.04, share: 4.74, qoq: 0.43, yoy: -37.65, ctoc: -37.45, note: `Permintaan material galian C naik tipis +0,43% QoQ untuk pematangan lahan PT MUS & jalan daerah, namun turun dibanding basis tinggi 2025.` },
+
+      { order: 17, code: `C`, name: `Industri Pengolahan`, level: 1, cat: `C`, adhb: 105067.13, adhk: 63088.43, share: 4.58, qoq: 11.86, yoy: 7.29, ctoc: 5.33, note: `Melonjak +11,86% QoQ dipimpin industri CPO/mamin (C.2) dan bahan bangunan non-logam (C.10).` },
+      { order: 18, code: `C.1`, name: `Industri Batubara dan Pengilangan Migas`, level: 2, cat: `C`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Tidak ada unit industri batubara maupun pengilangan migas di wilayah kabupaten.` },
+      { order: 19, code: `C.1.a`, name: `Industri Batu Bara`, level: 3, cat: `C`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Nihil (0,00) pada struktur industri Solok Selatan.` },
+      { order: 20, code: `C.1.b`, name: `Industri Pengilangan Migas`, level: 3, cat: `C`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Nihil (0,00) pada struktur industri Solok Selatan.` },
+      { order: 21, code: `C.2`, name: `Industri Makanan dan Minuman / CPO`, level: 2, cat: `C`, adhb: 60867.42, adhk: 34935.93, share: 2.65, qoq: 22.95, yoy: 12.00, ctoc: 9.30, note: `Puncak pengolahan CPO di PKS & maraknya kuliner Pesta Rakyat 17 Agustus mendorong lonjakan QoQ +22,95% dan YoY +12,00%.` },
+      { order: 22, code: `C.3`, name: `Pengolahan Tembakau`, level: 2, cat: `C`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Tidak terdapat industri pengolahan tembakau di Solok Selatan.` },
+      { order: 23, code: `C.4`, name: `Industri Tekstil dan Pakaian Jadi`, level: 2, cat: `C`, adhb: 1336.59, adhk: 812.30, share: 0.06, qoq: -6.32, yoy: -0.05, ctoc: 0.98, note: `Normalisasi pesanan konveksi/seragam sekolah pasca puncak Q2, kumulatif masih +0,98%.` },
+      { order: 24, code: `C.5`, name: `Industri Kulit, Barang dari Kulit dan Alas Kaki`, level: 2, cat: `C`, adhb: 19.35, adhk: 11.21, share: 0.00, qoq: -4.17, yoy: 0.08, ctoc: -0.07, note: `Usaha kerajinan kulit/reparasi alas kaki berskala kecil.` },
+      { order: 25, code: `C.6`, name: `Industri Kayu, Barang dari Kayu dan Gabus`, level: 2, cat: `C`, adhb: 138.06, adhk: 87.97, share: 0.01, qoq: 1.55, yoy: -2.10, ctoc: -0.17, note: `Pengolahan kayu gergajian/anyaman tumbuh tipis +1,55% QoQ.` },
+      { order: 26, code: `C.7`, name: `Industri Kertas dan Percetakan`, level: 2, cat: `C`, adhb: 14.04, adhk: 8.39, share: 0.00, qoq: -0.59, yoy: 1.06, ctoc: 0.63, note: `Penurunan cetak dokumen pemerintahan dibanding Q2 terimbangi pesanan spanduk/baliho agenda daerah.` },
+      { order: 27, code: `C.8`, name: `Industri Kimia, Farmasi dan Obat Tradisional`, level: 2, cat: `C`, adhb: 35.54, adhk: 18.17, share: 0.00, qoq: 10.12, yoy: 1.45, ctoc: 1.19, note: `Peningkatan produksi pupuk organik dan olahan herbal tradisional masyarakat (+10,12% QoQ).` },
+      { order: 28, code: `C.9`, name: `Industri Karet, Barang dari Karet dan Plastik`, level: 2, cat: `C`, adhb: 14620.84, adhk: 8515.77, share: 0.64, qoq: -13.67, yoy: -4.10, ctoc: -1.30, note: `Penurunan pengiriman karet olahan lokal dan koreksi harga karet mentah menekan output QoQ -13,67%.` },
+      { order: 29, code: `C.10`, name: `Industri Barang Galian Bukan Logam`, level: 2, cat: `C`, adhb: 27406.08, adhk: 18303.29, share: 1.19, qoq: 9.31, yoy: 5.20, ctoc: 2.80, note: `Lonjakan cetak batako, paving block, dan saluran beton untuk proyek trotoar Pemkab Solok Selatan.` },
+      { order: 30, code: `C.11`, name: `Industri Logam Dasar`, level: 2, cat: `C`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Tidak terdapat industri logam dasar (peleburan) di Solok Selatan.` },
+      { order: 31, code: `C.12`, name: `Industri Barang dari Logam, Komputer & Optik`, level: 2, cat: `C`, adhb: 254.12, adhk: 150.75, share: 0.01, qoq: 6.41, yoy: 1.15, ctoc: 0.71, note: `Bengkel las konstruksi, fabrikasi pagar/tralis dan komponen logam ringan.` },
+      { order: 32, code: `C.13`, name: `Industri Mesin dan Perlengkapan YTDL`, level: 2, cat: `C`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Tidak terdapat industri manufaktur mesin YTDL di Solok Selatan.` },
+      { order: 33, code: `C.14`, name: `Industri Alat Angkutan`, level: 2, cat: `C`, adhb: 7.14, adhk: 4.29, share: 0.00, qoq: 1.00, yoy: -0.36, ctoc: -1.01, note: `Perakitan/karoseri komponen angkutan skala sangat terbatas.` },
+      { order: 34, code: `C.15`, name: `Industri Furnitur`, level: 2, cat: `C`, adhb: 250.08, adhk: 173.71, share: 0.01, qoq: 1.20, yoy: 2.20, ctoc: 0.08, note: `Permintaan mebel kayu rumah tangga dan perkantoran stabil positif.` },
+      { order: 35, code: `C.16`, name: `Industri Pengolahan Lainnya & Jasa Reparasi`, level: 2, cat: `C`, adhb: 117.88, adhk: 66.65, share: 0.01, qoq: 1.66, yoy: 0.50, ctoc: -1.11, note: `Jasa reparasi dan pemasangan mesin peralatan pabrik/UMKM.` },
+
+      { order: 36, code: `D`, name: `Pengadaan Listrik dan Gas`, level: 1, cat: `D`, adhb: 939.86, adhk: 565.11, share: 0.04, qoq: 14.42, yoy: 32.34, ctoc: 17.13, note: `Pertumbuhan YoY tertinggi (+32,34%) dipicu perluasan sambungan dan konsumsi listrik konstruksi/industri.` },
+      { order: 37, code: `D.1`, name: `Ketenagalistrikan`, level: 2, cat: `D`, adhb: 927.76, adhk: 557.79, share: 0.04, qoq: 14.62, yoy: 32.87, ctoc: 17.34, note: `Peningkatan penyaluran daya PLN termasuk pasokan konstruksi PLTP Muara Laboh Unit 2.` },
+      { order: 38, code: `D.2`, name: `Pengadaan Gas dan Produksi Es`, level: 2, cat: `D`, adhb: 12.10, adhk: 7.31, share: 0.00, qoq: 1.53, yoy: 1.29, ctoc: 5.11, note: `Produksi es balok dan distribusi gas terjaga positif.` },
+
+      { order: 39, code: `E`, name: `Pengadaan Air & Pengelolaan Sampah`, level: 1, cat: `E`, adhb: 1026.40, adhk: 642.54, share: 0.04, qoq: 0.63, yoy: 3.71, ctoc: 2.34, note: `Perluasan sambungan rumah (SR) baru PDAM Tirta Saribu Sungai.` },
+
+      { order: 40, code: `F`, name: `Konstruksi`, level: 1, cat: `F`, adhb: 276188.30, adhk: 151426.68, share: 12.03, qoq: -8.71, yoy: 7.95, ctoc: 12.68, note: `Porsi 12,03%. YoY +7,95% & CtoC +12,68% (PKS PT MUS, IJD Rp 100 M, RSUD); QoQ -8,71% karena transisi lelang APBD 2026.` },
+
+      { order: 41, code: `G`, name: `Perdagangan Besar & Eceran; Reparasi Mobil & Motor`, level: 1, cat: `G`, adhb: 471441.43, adhk: 270426.70, share: 20.53, qoq: 2.26, yoy: 4.03, ctoc: 4.93, note: `Pilar ekonomi terbesar kedua (20,53%) yang menjaga sirkulasi distribusi barang konsumsi dan hasil bumi.` },
+      { order: 42, code: `G.1`, name: `Perdagangan Mobil, Sepeda Motor & Reparasinya (Otomotif)`, level: 2, cat: `G`, adhb: 12530.79, adhk: 6266.26, share: 0.55, qoq: 18.59, yoy: 8.32, ctoc: 6.03, note: `Peningkatan penjualan kendaraan dan jasa bengkel pascapembayaran hasil panen sawit & tahun ajaran baru.` },
+      { order: 43, code: `G.2`, name: `Perdagangan Besar & Eceran Bukan Mobil/Motor (Eceran Sembako)`, level: 2, cat: `G`, adhb: 458910.64, adhk: 264160.44, share: 19.99, qoq: 1.93, yoy: 3.93, ctoc: 4.91, note: `Perdagangan eceran sembako dan komoditas agraris menopang hampir seperlima PDRB Solok Selatan.` },
+
+      { order: 44, code: `H`, name: `Transportasi dan Pergudangan`, level: 1, cat: `H`, adhb: 129162.62, adhk: 75509.91, share: 5.62, qoq: -5.92, yoy: 0.37, ctoc: 2.08, note: `Normalisasi angkutan penumpang pasca-Iduladha & libur sekolah, sementara kumulatif tetap +2,08%.` },
+      { order: 45, code: `H.1`, name: `Angkutan Rel`, level: 2, cat: `H`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Tidak terdapat layanan angkutan kereta api di Kabupaten Solok Selatan.` },
+      { order: 46, code: `H.2`, name: `Angkutan Darat`, level: 2, cat: `H`, adhb: 104251.54, adhk: 62561.41, share: 4.54, qoq: -6.51, yoy: 0.90, ctoc: 2.31, note: `Penyesuaian frekuensi angkutan penumpang QoQ, ditopang angkutan logistik TBS sawit & material.` },
+      { order: 47, code: `H.3`, name: `Angkutan Laut`, level: 2, cat: `H`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Wilayah daratan tanpa pelabuhan angkutan laut.` },
+      { order: 48, code: `H.4`, name: `Angkutan Sungai, Danau dan Penyeberangan`, level: 2, cat: `H`, adhb: 346.55, adhk: 179.26, share: 0.02, qoq: 16.63, yoy: 4.69, ctoc: -1.22, note: `Mobilitas penyeberangan sungai lokal meningkat +16,63% QoQ.` },
+      { order: 49, code: `H.5`, name: `Angkutan Udara`, level: 2, cat: `H`, adhb: 0.00, adhk: 0.00, share: 0.00, qoq: null, yoy: null, ctoc: null, note: `Tidak terdapat bandar udara komersial di Kabupaten Solok Selatan.` },
+      { order: 50, code: `H.6`, name: `Pergudangan dan Jasa Penunjang Angkutan, Pos & Kurir`, level: 2, cat: `H`, adhb: 24564.53, adhk: 12769.24, share: 1.07, qoq: -3.17, yoy: -2.22, ctoc: 1.02, note: `Aktivitas kurir dan pergudangan melandai tipis secara triwulanan pascamusim belanja Q2.` },
+
+      { order: 51, code: `I`, name: `Penyediaan Akomodasi dan Makan Minum`, level: 1, cat: `I`, adhb: 23478.19, adhk: 11524.71, share: 1.02, qoq: 1.69, yoy: 15.77, ctoc: 18.45, note: `Sektor jasa dengan laju kumulatif tercepat (+18,45% CtoC) didorong kuliner lokal dan event daerah.` },
+      { order: 52, code: `I.1`, name: `Penyediaan Akomodasi`, level: 2, cat: `I`, adhb: 131.54, adhk: 61.61, share: 0.01, qoq: -3.26, yoy: -1.19, ctoc: 2.00, note: `Okupansi penginapan menyesuaikan pascaliburan semester Q2.` },
+      { order: 53, code: `I.2`, name: `Penyediaan Makan Minum (Restoran)`, level: 2, cat: `I`, adhb: 23346.65, adhk: 11463.10, share: 1.02, qoq: 1.72, yoy: 15.87, ctoc: 18.55, note: `Ekspansi usaha rumah makan/kafe dan konsumsi acara Pesta Rakyat 17 Agustus mendorong CtoC +18,55%.` },
+
+      { order: 54, code: `J`, name: `Informasi dan Komunikasi`, level: 1, cat: `J`, adhb: 115484.19, adhk: 91838.65, share: 5.03, qoq: -2.27, yoy: 1.86, ctoc: 2.15, note: `Digitalisasi dan transaksi QRIS menopang pertumbuhan tahunan; pemeliharaan jaringan fiber optik terjaga.` },
+
+      { order: 55, code: `K`, name: `Jasa Keuangan dan Asuransi`, level: 1, cat: `K`, adhb: 16362.11, adhk: 9531.81, share: 0.71, qoq: -2.72, yoy: -1.32, ctoc: 1.96, note: `Normalisasi penyaluran kredit pasca-Q2 dan tantangan kesehatan sebagian koperasi simpan pinjam.` },
+      { order: 56, code: `K.1`, name: `Jasa Perantara Keuangan`, level: 2, cat: `K`, adhb: 5885.25, adhk: 3163.89, share: 0.26, qoq: -7.51, yoy: -7.69, ctoc: 2.06, note: `Penyesuaian realisasi kredit perbankan pasca pencairan besar di Q2-2026.` },
+      { order: 57, code: `K.2`, name: `Asuransi dan Dana Pensiun`, level: 2, cat: `K`, adhb: 990.11, adhk: 553.08, share: 0.04, qoq: -4.06, yoy: -4.40, ctoc: -0.03, note: `Koreksi moderat pada premi asuransi non-jiwa/kredit.` },
+      { order: 58, code: `K.3`, name: `Jasa Keuangan Lainnya`, level: 2, cat: `K`, adhb: 9325.57, adhk: 5726.32, share: 0.41, qoq: 0.18, yoy: 2.90, ctoc: 2.14, note: `Pembiayaan nonbank, pegadaian, dan lembaga keuangan mikro tetap tumbuh positif.` },
+      { order: 59, code: `K.4`, name: `Jasa Penunjang Keuangan`, level: 2, cat: `K`, adhb: 161.17, adhk: 88.52, share: 0.01, qoq: 3.68, yoy: 0.24, ctoc: 0.41, note: `Jasa penunjang transaksi & agen laku pandai naik +3,68% QoQ.` },
+
+      { order: 60, code: `L`, name: `Real Estate`, level: 1, cat: `L`, adhb: 18717.71, adhk: 10840.52, share: 0.81, qoq: 1.57, yoy: 1.75, ctoc: 3.20, note: `Sewa hunian dan jasa properti perumahan tumbuh stabil.` },
+      { order: 61, code: `M,N`, name: `Jasa Perusahaan`, level: 1, cat: `M,N`, adhb: 312.96, adhk: 191.80, share: 0.01, qoq: 1.80, yoy: 2.03, ctoc: 2.77, note: `Permintaan jasa notaris, konsultan teknik proyek APBD, dan persewaan alat.` },
+      { order: 62, code: `O`, name: `Administrasi Pemerintahan, Pertahanan & Jaminan Sosial Wajib`, level: 1, cat: `O`, adhb: 93097.43, adhk: 44519.85, share: 4.05, qoq: -17.67, yoy: -2.20, ctoc: -1.62, note: `Penurunan belanja pegawai QoQ karena THR dan gaji ke-13 sudah terealisasi penuh pada Triwulan II-2026.` },
+      { order: 63, code: `P`, name: `Jasa Pendidikan`, level: 1, cat: `P`, adhb: 58777.44, adhk: 30921.84, share: 2.56, qoq: 0.68, yoy: 3.15, ctoc: 4.30, note: `Dimulainya Tahun Ajaran Baru 2026/2027 (Juli 2026), SPMB/PPDB, serta kegiatan PLK mahasiswa di sekolah.` },
+      { order: 64, code: `Q`, name: `Jasa Kesehatan dan Kegiatan Sosial`, level: 1, cat: `Q`, adhb: 30309.33, adhk: 17493.74, share: 1.32, qoq: -0.91, yoy: 4.90, ctoc: 5.60, note: `Peningkatan layanan RSUD dan fasilitas kesehatan masyarakat menopang pertumbuhan tahunan +4,90% YoY.` },
+      { order: 65, code: `R,S,T,U`, name: `Jasa Lainnya`, level: 1, cat: `R,S,T,U`, adhb: 31718.38, adhk: 16735.34, share: 1.38, qoq: 2.35, yoy: 4.50, ctoc: 4.42, note: `Aktivitas organisasi nagari, kader Dasawisma/TP-PKK, serta perluasan usaha jasa mikro (salon, reparasi, laundry).` },
+
+      { order: 66, code: `PDRB`, name: `PRODUK DOMESTIK REGIONAL BRUTO (TOTAL)`, level: 0, cat: `TOTAL`, adhb: 2296186.42, adhk: 1256915.88, share: 100.00, qoq: -0.33, yoy: 4.81, ctoc: 5.29, note: `Rekonsiliasi 100% klop dengan Sisi Pengeluaran. Deflator Implisit = 182,68.` }
     ];
 
-    const lapusTotal = {
-      code: `PDRB`, name: `Total PDRB Lapangan Usaha (17 Kategori)`, level: `total`,
-      adhb: 2296186.42, adhk: 1256915.88, share: 100.00, qoq: -0.33, yoy: 4.81, ctoc: 5.29
-    };
+    // =========================================================================
+    // 2. DATASET LENGKAP SISI PENGELUARAN (18 BARIS PRESISI)
+    // =========================================================================
+    const PENG_DATA = [
+      { order: 1, code: `1`, name: `Pengeluaran Konsumsi Rumah Tangga (PK-RT)`, level: 1, group: `pkrt`, adhb: 1162042.38, adhk: 604990.51, share: 50.61, qoq: -0.19, yoy: 4.70, ctoc: 4.61, note: `Penopang utama permintaan (50,61%). Tumbuh solid +4,70% YoY; koreksi tipis -0,19% QoQ pascamusim Iduladha & libur sekolah.` },
+      { order: 2, code: `1.a`, name: `Makanan, Minuman, dan Rokok`, level: 2, group: `pkrt`, adhb: 634231.61, adhk: 316957.32, share: 27.62, qoq: -0.10, yoy: 6.63, ctoc: 6.36, note: `Lebih dari seperempat PDRB (27,62%), dijaga stabilitas pasokan dan operasi pasar murah.` },
+      { order: 3, code: `1.b`, name: `Pakaian dan Alas Kaki`, level: 2, group: `pkrt`, adhb: 34355.48, adhk: 20886.08, share: 1.50, qoq: -1.28, yoy: -0.44, ctoc: 0.67, note: `Normalisasi belanja sandang pasca hari raya.` },
+      { order: 4, code: `1.c`, name: `Perumahan, Perkakas & Penyelenggaraan RT`, level: 2, group: `pkrt`, adhb: 90157.02, adhk: 55885.84, share: 3.93, qoq: 0.26, yoy: 7.14, ctoc: 5.83, note: `Peningkatan konsumsi listrik, air bersih, dan perlengkapan rumah tangga.` },
+      { order: 5, code: `1.d`, name: `Kesehatan dan Pendidikan`, level: 2, group: `pkrt`, adhb: 80472.15, adhk: 40240.10, share: 3.50, qoq: 0.46, yoy: 7.83, ctoc: 6.14, note: `Didorong awal Tahun Ajaran Baru 2026/2027 dan layanan kesehatan.` },
+      { order: 6, code: `1.e`, name: `Transportasi dan Komunikasi`, level: 2, group: `pkrt`, adhb: 226535.49, adhk: 126704.79, share: 9.87, qoq: -0.81, yoy: 1.37, ctoc: 2.72, note: `Normalisasi mobilitas dan belanja komunikasi pascalibur panjang Q2.` },
+      { order: 7, code: `1.f`, name: `Hotel dan Restoran`, level: 2, group: `pkrt`, adhb: 31965.37, adhk: 16812.84, share: 1.39, qoq: 1.15, yoy: 7.91, ctoc: 6.82, note: `Pertumbuhan tercepat di kelompok PK-RT (+7,91% YoY) seiring semarak wisata kuliner & acara 17 Agustus.` },
+      { order: 8, code: `1.g`, name: `Lainnya`, level: 2, group: `pkrt`, adhb: 64325.26, adhk: 27503.53, share: 2.80, qoq: -0.23, yoy: -6.87, ctoc: -7.45, note: `Belanja barang pribadi dan jasa keuangan/lainnya rumah tangga.` },
 
-    const pengData = [
-      { code: `1.`, name: `Konsumsi Rumah Tangga (PK-RT)`, group: `main`, level: `parent`, adhb: 1162042.38, adhk: 604990.51, share: 50.61, qoq: -0.19, yoy: 4.70, ctoc: 4.61 },
-      { code: `1.a.`, name: `Makanan, Minuman, dan Rokok`, group: `pkrt`, level: `sub`, adhb: 634231.61, adhk: 316957.32, share: 27.62, qoq: -0.10, yoy: 6.63, ctoc: 6.36 },
-      { code: `1.b.`, name: `Pakaian dan Alas Kaki`, group: `pkrt`, level: `sub`, adhb: 34355.48, adhk: 20886.08, share: 1.50, qoq: -1.28, yoy: -0.44, ctoc: 0.67 },
-      { code: `1.c.`, name: `Perumahan & Perkakas`, group: `pkrt`, level: `sub`, adhb: 90157.02, adhk: 55885.84, share: 3.93, qoq: 0.26, yoy: 7.14, ctoc: 5.83 },
-      { code: `1.d.`, name: `Kesehatan dan Pendidikan`, group: `pkrt`, level: `sub`, adhb: 80472.15, adhk: 40240.10, share: 3.50, qoq: 0.46, yoy: 7.83, ctoc: 6.14 },
-      { code: `1.e.`, name: `Transportasi, Komunikasi, Rekreasi`, group: `pkrt`, level: `sub`, adhb: 226535.49, adhk: 126704.79, share: 9.87, qoq: -0.81, yoy: 1.37, ctoc: 2.72 },
-      { code: `1.f.`, name: `Hotel dan Restoran`, group: `pkrt`, level: `sub`, adhb: 31965.37, adhk: 16812.84, share: 1.39, qoq: 1.15, yoy: 7.91, ctoc: 6.82 },
-      { code: `1.g.`, name: `Lainnya`, group: `pkrt`, level: `sub`, adhb: 64325.26, adhk: 27503.53, share: 2.80, qoq: -0.23, yoy: -6.87, ctoc: -7.45 },
-      { code: `2.`, name: `Konsumsi LNPRT (PK-LNPRT)`, group: `main`, level: `parent`, adhb: 23637.65, adhk: 13919.23, share: 1.03, qoq: -7.10, yoy: 5.14, ctoc: 4.36 },
-      { code: `3.`, name: `Konsumsi Pemerintah (PK-P)`, group: `main`, level: `parent`, adhb: 189557.01, adhk: 98293.67, share: 8.26, qoq: 1.04, yoy: 3.40, ctoc: 1.93 },
-      { code: `4.`, name: `PMTB (Investasi Total = 4.a + 4.b)`, group: `main`, level: `parent`, adhb: 677150.12, adhk: 351681.42, share: 29.49, qoq: -11.62, yoy: 10.66, ctoc: 15.81 },
-      { code: `4.a.`, name: `PMTB Bangunan`, group: `pmtb`, level: `sub`, adhb: 400130.20, adhk: 211172.79, share: 17.43, qoq: -18.09, yoy: 6.69, ctoc: 15.07 },
-      { code: `4.b.`, name: `PMTB Non-Bangunan`, group: `pmtb`, level: `sub`, adhb: 277019.92, adhk: 140508.63, share: 12.06, qoq: 0.27, yoy: 17.23, ctoc: 17.02 },
-      { code: `5.`, name: `Perubahan Inventori`, group: `main`, level: `parent`, adhb: -11555.14, adhk: -6889.66, share: -0.50, qoq: 57.87, yoy: 363.27, ctoc: -15.88 },
-      { code: `6.`, name: `Ekspor Luar Negeri & Antar Daerah`, group: `main`, level: `parent`, adhb: 2140940.12, adhk: 1170766.70, share: 93.24, qoq: 0.46, yoy: 5.84, ctoc: 4.89 },
-      { code: `7.`, name: `Impor Luar Negeri & Antar Daerah`, group: `main`, level: `parent`, adhb: 1885585.72, adhk: 975846.00, share: 82.12, qoq: -3.98, yoy: 7.31, ctoc: 7.59 },
-      { code: `8.`, name: `Net Ekspor (Ekspor − Impor)`, group: `main`, level: `parent`, adhb: 255354.40, adhk: 194920.70, share: 11.12, qoq: 30.73, yoy: -0.94, ctoc: -7.64 }
+      { order: 9, code: `2`, name: `Pengeluaran Konsumsi LNPRT (PK-LNPRT)`, level: 1, group: `main`, adhb: 23637.65, adhk: 13919.23, share: 1.03, qoq: -7.10, yoy: 5.14, ctoc: 4.36, note: `Aktivitas lembaga sosial, kemasyarakatan, dan keagamaan tumbuh +5,14% YoY.` },
+      { order: 10, code: `3`, name: `Pengeluaran Konsumsi Pemerintah (PK-P)`, level: 1, group: `main`, adhb: 189557.01, adhk: 98293.67, share: 8.26, qoq: 1.04, yoy: 3.40, ctoc: 1.93, note: `Realisasi belanja barang dan jasa operasional layanan publik Q3 tumbuh +1,04% QoQ & +3,40% YoY.` },
+
+      { order: 11, code: `4`, name: `Pembentukan Modal Tetap Bruto (PMTB / Investasi)`, level: 1, group: `pmtb`, adhb: 677150.12, adhk: 351681.42, share: 29.49, qoq: -11.62, yoy: 10.66, ctoc: 15.81, note: `Porsi 29,49%. Melaju +10,66% YoY & +15,81% CtoC didorong proyek energi, pabrik CPO, jalan, dan pengadaan alat berat.` },
+      { order: 12, code: `4.a`, name: `PMTB Bangunan`, level: 2, group: `pmtb`, adhb: 400130.20, adhk: 211172.79, share: 17.43, qoq: -18.09, yoy: 6.69, ctoc: 15.07, note: `Penyelesaian bertahap jalan konektivitas, RSUD Rp 3–5 Miliar, penataan RTH/trotoar, serta gedung PKS swasta.` },
+      { order: 13, code: `4.b`, name: `PMTB Non-Bangunan`, level: 2, group: `pmtb`, adhb: 277019.92, adhk: 140508.63, share: 12.06, qoq: 0.27, yoy: 17.23, ctoc: 17.02, note: `Melesat +17,23% YoY dari pengadaan mesin/alat berat, peralatan teknis/kesehatan, serta penanaman modal sawit (replanting).` },
+
+      { order: 14, code: `5`, name: `Perubahan Inventori`, level: 1, group: `main`, adhb: -11555.14, adhk: -6889.66, share: -0.50, qoq: 57.87, yoy: 363.27, ctoc: -15.88, note: `Pencairan stok barang dagangan dan input produksi pada triwulan berjalan.` },
+      { order: 15, code: `6`, name: `Ekspor Barang dan Jasa (Antarwilayah & LN)`, level: 1, group: `pmtb`, adhb: 2140940.12, adhk: 1170766.70, share: 93.24, qoq: 0.46, yoy: 5.84, ctoc: 4.89, note: `Pengiriman komoditas unggulan keluar daerah: CPO, kopi, karet, dan teh (+5,84% YoY).` },
+      { order: 16, code: `7`, name: `Impor Barang dan Jasa (Antarwilayah & LN)`, level: 1, group: `pmtb`, adhb: 1885585.72, adhk: 975846.00, share: 82.12, qoq: -3.98, yoy: 7.31, ctoc: 7.59, note: `Arus masuk barang modal, peralatan teknis/kesehatan, material konstruksi, pupuk, bibit, dan barang konsumsi.` },
+      { order: 17, code: `8`, name: `Net Ekspor (Ekspor dikurangi Impor)`, level: 1, group: `pmtb`, adhb: 255354.40, adhk: 194920.70, share: 11.12, qoq: 30.73, yoy: -0.94, ctoc: -7.64, note: `Surplus perdagangan wilayah Rp 255,35 Miliar (+30,73% QoQ), sedikit terkoreksi YoY karena tingginya impor barang modal.` },
+
+      { order: 18, code: `PDRB`, name: `PRODUK DOMESTIK REGIONAL BRUTO (TOTAL)`, level: 0, group: `total`, adhb: 2296186.42, adhk: 1256915.88, share: 100.00, qoq: -0.33, yoy: 4.81, ctoc: 5.29, note: `Identik 100% dengan Sisi Lapangan Usaha.` }
     ];
 
-    const pengTotal = {
-      code: `PDRB`, name: `Total PDRB Pengeluaran (1 + 2 + 3 + 4 + 5 + 8)`, group: `total`, level: `total`,
-      adhb: 2296186.42, adhk: 1256915.88, share: 100.00, qoq: -0.33, yoy: 4.81, ctoc: 5.29
-    };
-
     // =========================================================================
-    // 2. STATE & TOKEN HELPERS
+    // 3. STATE & COLOR HELPERS (READS TOKENS FROM :root)
     // =========================================================================
-    const state = {
-      lapusShareSort: `desc`,
-      lapusMetric: `yoy`,
-      lapusScope: `cat`,
-      pengShareMode: `main`,
-      pengMetric: `yoy`,
-      pengScope: `main`,
-      includeInventori: false,
-      lapusSortCol: `default`,
-      lapusSortDir: `asc`,
-      pengSortCol: `default`,
-      pengSortDir: `asc`
-    };
+    let luFilterMode = 'all';
+    let luSortCol = 'order';
+    let luSortAsc = true;
+    let luSelectedCode = 'A.1.e';
 
-    let chartLapusShare = null;
-    let chartLapusGrowth = null;
-    let chartPengShare = null;
-    let chartPengGrowth = null;
+    let pengFilterMode = 'all';
+    let pengSortCol = 'order';
+    let pengSortAsc = true;
 
-    function getCssToken(name) {
+    let luStructMode = 'share';
+    let industriMetric = 'adhb';
+    let pengStructMode = 'share';
+    let includeInventori = false;
+
+    const charts = {};
+
+    function getCSSVar(name) {
       return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
     }
 
     function fmtNum(val, decimals) {
-      if (val === null || val === undefined || Number.isNaN(val)) return `-`;
-      return val.toLocaleString(`id-ID`, {
+      if (val === null || val === undefined || Number.isNaN(val)) return '—';
+      return val.toLocaleString('id-ID', {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals
       });
     }
 
-    function fmtPct(val) {
-      if (val === null || val === undefined || Number.isNaN(val)) return `-`;
-      const sign = val > 0 ? `+` : ``;
-      return `${sign}${fmtNum(val, 2)}%`;
+    function fmtSigned(val) {
+      if (val === null || val === undefined || Number.isNaN(val)) return '—';
+      const sign = val > 0 ? '+' : '';
+      return sign + fmtNum(val, 2) + '%';
     }
 
-    function badgeClassForPct(val) {
-      if (val === null || val === undefined) return `badge-neutral`;
-      if (val > 0) return `badge-pos`;
-      if (val < 0) return `badge-neg`;
-      return `badge-neutral`;
-    }
-
-    function scrollToSection(id) {
-      const target = document.getElementById(id);
-      if (target) target.scrollIntoView({ behavior: `smooth`, block: `start` });
+    function deltaClass(val) {
+      if (val === null || val === undefined) return 'delta-neutral';
+      if (val > 0) return 'delta-pos';
+      if (val < 0) return 'delta-neg';
+      return 'delta-neutral';
     }
 
     // =========================================================================
-    // 3. CHART RENDERERS (SEPARATED STRICTLY PER DIMENSION & SIDE)
+    // 4. CHART INITIALIZATION & STRICT SEPARATED MATRIX RENDERERS
     // =========================================================================
-    function buildChartTheme() {
-      return {
-        ink: getCssToken(`--on-surface`),
-        muted: getCssToken(`--on-surface-variant`),
-        grid: getCssToken(`--outline-variant`),
-        data1: getCssToken(`--data-1`),
-        data2: getCssToken(`--data-2`),
-        data3: getCssToken(`--data-3`),
-        data4: getCssToken(`--data-4`),
-        context: getCssToken(`--data-context`),
-        fontLabel: getCssToken(`--font-label`),
-        fontBody: getCssToken(`--font-body`)
-      };
-    }
-
-    function renderLapusShareChart() {
-      const canvas = document.getElementById(`chart-lapus-share`);
-      if (!canvas || typeof Chart === `undefined`) return;
-      const t = buildChartTheme();
-
-      let rows = lapusData.filter(d => d.level === `parent`).slice();
-      if (state.lapusShareSort === `desc`) {
-        rows.sort((a, b) => b.share - a.share);
+    function destroyChart(key) {
+      if (charts[key]) {
+        charts[key].destroy();
+        charts[key] = null;
       }
+    }
 
-      const labels = rows.map(r => `${r.code}. ${r.name.length > 26 ? r.name.slice(0, 25) + `…` : r.name}`);
-      const values = rows.map(r => r.share);
-      const colors = rows.map((r, i) => (r.share >= 10 ? t.data1 : (r.share >= 4 ? t.data2 : t.context)));
-
-      if (chartLapusShare) chartLapusShare.destroy();
-      chartLapusShare = new Chart(canvas, {
-        type: `bar`,
-        data: {
-          labels: labels,
-          datasets: [{
-            label: `Share ADHB (%)`,
-            data: values,
-            backgroundColor: colors,
-            borderRadius: 2,
-            barPercentage: 0.72
-          }]
-        },
-        options: {
-          indexAxis: `y`,
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                title: (items) => {
-                  const idx = items[0].dataIndex;
-                  return `${rows[idx].code}. ${rows[idx].name}`;
-                },
-                label: (ctx) => {
-                  const r = rows[ctx.dataIndex];
-                  return [
-                    `Share ADHB: ${fmtNum(r.share, 2)}%`,
-                    `Nilai ADHB: Rp ${fmtNum(r.adhb, 2)} Jt`,
-                    `Nilai ADHK: Rp ${fmtNum(r.adhk, 2)} Jt`
-                  ];
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: `Kontribusi terhadap Total PDRB ADHB (%)`,
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 }
-              },
-              ticks: {
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 },
-                callback: (v) => `${v}%`
-              },
-              grid: { color: t.grid }
-            },
-            y: {
-              ticks: {
-                color: t.ink,
-                font: { family: t.fontLabel, size: 11 }
-              },
-              grid: { display: false }
-            }
-          }
-        }
+    function buildBarColors(values, posColor, negColor) {
+      return values.map(function (v) {
+        if (v === null || v === undefined) return getCSSVar('--data-context');
+        return v >= 0 ? posColor : negColor;
       });
     }
 
-    function renderLapusGrowthChart() {
-      const canvas = document.getElementById(`chart-lapus-growth`);
-      if (!canvas || typeof Chart === `undefined`) return;
-      const t = buildChartTheme();
+    function renderLuStructureChart() {
+      const canvas = document.getElementById('chart-lu-structure');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyChart('luStruct');
 
-      const metric = state.lapusMetric;
-      const metricTitles = {
-        qoq: `Komparasi Pertumbuhan QoQ (%) — Lapangan Usaha`,
-        yoy: `Komparasi Pertumbuhan YoY (%) — Lapangan Usaha`,
-        ctoc: `Komparasi Pertumbuhan CtoC (%) — Lapangan Usaha`
-      };
-      const metricSubs = {
-        qoq: `Hanya memuat metrik QoQ (Triwulan III-2026 vs Triwulan II-2026)`,
-        yoy: `Hanya memuat metrik YoY (Triwulan III-2026 vs Triwulan III-2025)`,
-        ctoc: `Hanya memuat metrik CtoC (Kumulatif Q1–Q3 2026 vs Q1–Q3 2025)`
-      };
-
-      const titleEl = document.getElementById(`lapus-growth-title`);
-      const subEl = document.getElementById(`lapus-growth-sub`);
-      if (titleEl) titleEl.textContent = metricTitles[metric];
-      if (subEl) subEl.textContent = metricSubs[metric];
-
-      const targetLevel = state.lapusScope === `cat` ? `parent` : `sub`;
-      const rows = lapusData
-        .filter(d => d.level === targetLevel)
+      const cats = LU_DATA.filter(function (r) { return r.level === 1; })
         .slice()
-        .sort((a, b) => {
-          const av = a[metric] === null ? -9999 : a[metric];
-          const bv = b[metric] === null ? -9999 : b[metric];
-          return bv - av;
+        .sort(function (a, b) { return b.adhb - a.adhb; });
+
+      const labels = cats.map(function (r) { return r.code + '. ' + (r.name.length > 26 ? r.name.slice(0, 24) + '…' : r.name); });
+      const c1 = getCSSVar('--data-1');
+      const c2 = getCSSVar('--data-2');
+      const gridC = getCSSVar('--outline-variant');
+      const inkC = getCSSVar('--on-surface');
+
+      if (luStructMode === 'share') {
+        charts.luStruct = new Chart(canvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Share ADHB (%)',
+              data: cats.map(function (r) { return r.share; }),
+              backgroundColor: c1,
+              borderRadius: 2
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return 'Share: ' + fmtNum(ctx.parsed.x, 2) + '%'; }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: gridC },
+                ticks: { color: inkC, callback: function (v) { return v + '%'; } }
+              },
+              y: {
+                grid: { display: false },
+                ticks: { color: inkC, font: { size: 11 } }
+              }
+            }
+          }
         });
-
-      const labels = rows.map(r => {
-        const shortName = r.name.length > 26 ? r.name.slice(0, 25) + `…` : r.name;
-        return r[metric] === null ? `${r.code}. ${shortName} ("-")` : `${r.code}. ${shortName}`;
-      });
-      const values = rows.map(r => (r[metric] === null ? 0 : r[metric]));
-      const colors = rows.map(r => {
-        if (r[metric] === null) return t.context;
-        return r[metric] >= 0 ? t.data3 : t.data4;
-      });
-
-      if (chartLapusGrowth) chartLapusGrowth.destroy();
-      chartLapusGrowth = new Chart(canvas, {
-        type: `bar`,
-        data: {
-          labels: labels,
-          datasets: [{
-            label: `${metric.toUpperCase()} (%)`,
-            data: values,
-            backgroundColor: colors,
-            borderRadius: 2,
-            barPercentage: 0.72
-          }]
-        },
-        options: {
-          indexAxis: `y`,
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                title: (items) => {
-                  const r = rows[items[0].dataIndex];
-                  return `${r.code}. ${r.name}`;
-                },
-                label: (ctx) => {
-                  const r = rows[ctx.dataIndex];
-                  if (r[metric] === null) {
-                    return `${metric.toUpperCase()}: "-" (${r.note || `Belum ada pembanding 2025`})`;
-                  }
-                  return `${metric.toUpperCase()}: ${fmtPct(r[metric])}`;
+      } else {
+        charts.luStruct = new Chart(canvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'ADHB (Miliar Rp)',
+                data: cats.map(function (r) { return Number((r.adhb / 1000).toFixed(2)); }),
+                backgroundColor: c1,
+                borderRadius: 2
+              },
+              {
+                label: 'ADHK (Miliar Rp)',
+                data: cats.map(function (r) { return Number((r.adhk / 1000).toFixed(2)); }),
+                backgroundColor: c2,
+                borderRadius: 2
+              }
+            ]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'top' },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.dataset.label + ': Rp ' + fmtNum(ctx.parsed.x, 2) + ' M'; }
                 }
               }
-            }
-          },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: `Laju Pertumbuhan ${metric.toUpperCase()} (%)`,
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 }
-              },
-              ticks: {
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 },
-                callback: (v) => `${v}%`
-              },
-              grid: { color: t.grid }
             },
-            y: {
-              ticks: {
-                color: t.ink,
-                font: { family: t.fontLabel, size: 11 }
-              },
-              grid: { display: false }
+            scales: {
+              x: { grid: { color: gridC }, ticks: { color: inkC } },
+              y: { grid: { display: false }, ticks: { color: inkC, font: { size: 11 } } }
             }
           }
-        }
-      });
+        });
+      }
     }
 
-    function renderPengShareChart() {
-      const canvas = document.getElementById(`chart-peng-share`);
-      if (!canvas || typeof Chart === `undefined`) return;
-      const t = buildChartTheme();
+    function renderIndustriCChart() {
+      const canvas = document.getElementById('chart-industri-c');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyChart('industriC');
 
-      const titleEl = document.getElementById(`peng-share-title`);
-      const subEl = document.getElementById(`peng-share-sub`);
+      // Strictly C.1 through C.16 (level 2 inside cat C)
+      const subs = LU_DATA.filter(function (r) { return r.cat === 'C' && r.level === 2; });
+      const labels = subs.map(function (r) {
+        const shortName = r.name.replace('Industri ', '');
+        return r.code + ' · ' + (shortName.length > 22 ? shortName.slice(0, 20) + '…' : shortName);
+      });
 
-      let rows = [];
-      if (state.pengShareMode === `main`) {
-        if (titleEl) titleEl.textContent = `Komposisi Share ADHB (%) — Komponen Pembentuk PDRB`;
-        if (subEl) subEl.textContent = `Komponen 1, 2, 3, 4, 5, dan 8 (Net Ekspor) · Total = 100,00%`;
-        rows = pengData.filter(d => [`1.`, `4.`, `8.`, `3.`, `2.`, `5.`].includes(d.code));
+      const c1 = getCSSVar('--data-1');
+      const c2 = getCSSVar('--data-2');
+      const cPos = getCSSVar('--data-3');
+      const cNeg = getCSSVar('--data-4');
+      const gridC = getCSSVar('--outline-variant');
+      const inkC = getCSSVar('--on-surface');
+
+      let vals = [];
+      let labelText = '';
+      let colors = [];
+
+      if (industriMetric === 'adhb') {
+        vals = subs.map(function (r) { return r.adhb; });
+        labelText = 'ADHB (Juta Rp)';
+        colors = subs.map(function (r) { return r.adhb > 0 ? c2 : getCSSVar('--data-context'); });
+      } else if (industriMetric === 'qoq') {
+        vals = subs.map(function (r) { return r.qoq === null ? 0 : r.qoq; });
+        labelText = 'Pertumbuhan QoQ (%)';
+        colors = buildBarColors(subs.map(function (r) { return r.qoq; }), cPos, cNeg);
+      } else if (industriMetric === 'yoy') {
+        vals = subs.map(function (r) { return r.yoy === null ? 0 : r.yoy; });
+        labelText = 'Pertumbuhan YoY (%)';
+        colors = buildBarColors(subs.map(function (r) { return r.yoy; }), c1, cNeg);
       } else {
-        if (titleEl) titleEl.textContent = `Rincian Share ADHB (%) — Subkomponen PK-RT (1.a–1.g)`;
-        if (subEl) subEl.textContent = `Bagian dari Konsumsi Rumah Tangga (Total PK-RT = 50,61% PDRB)`;
-        rows = pengData.filter(d => d.group === `pkrt`).slice().sort((a, b) => b.share - a.share);
+        vals = subs.map(function (r) { return r.ctoc === null ? 0 : r.ctoc; });
+        labelText = 'Pertumbuhan CtoC (%)';
+        colors = buildBarColors(subs.map(function (r) { return r.ctoc; }), cPos, cNeg);
       }
 
-      const labels = rows.map(r => `${r.code} ${r.name.length > 26 ? r.name.slice(0, 25) + `…` : r.name}`);
-      const values = rows.map(r => r.share);
-      const colors = rows.map(r => (r.share < 0 ? t.data4 : (r.share >= 15 ? t.data1 : t.data2)));
-
-      if (chartPengShare) chartPengShare.destroy();
-      chartPengShare = new Chart(canvas, {
-        type: `bar`,
+      charts.industriC = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
         data: {
           labels: labels,
           datasets: [{
-            label: `Share ADHB (%)`,
-            data: values,
+            label: labelText,
+            data: vals,
             backgroundColor: colors,
-            borderRadius: 2,
-            barPercentage: 0.68
+            borderRadius: 2
           }]
         },
         options: {
-          indexAxis: `y`,
+          indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                title: (items) => {
-                  const r = rows[items[0].dataIndex];
-                  return `${r.code} ${r.name}`;
-                },
-                label: (ctx) => {
-                  const r = rows[ctx.dataIndex];
-                  return [
-                    `Share ADHB: ${fmtNum(r.share, 2)}%`,
-                    `Nilai ADHB: Rp ${fmtNum(r.adhb, 2)} Jt`,
-                    `Nilai ADHK: Rp ${fmtNum(r.adhk, 2)} Jt`
-                  ];
+                label: function (ctx) {
+                  const row = subs[ctx.dataIndex];
+                  if (industriMetric === 'adhb') return 'ADHB: Rp ' + fmtNum(row.adhb, 2) + ' Juta';
+                  const raw = row[industriMetric];
+                  return raw === null ? 'Nihil / Tidak ada aktivitas (0,00)' : labelText + ': ' + fmtSigned(raw);
                 }
               }
             }
           },
           scales: {
             x: {
-              title: {
-                display: true,
-                text: `Kontribusi terhadap Total PDRB ADHB (%)`,
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 }
-              },
+              grid: { color: gridC },
               ticks: {
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 },
-                callback: (v) => `${v}%`
-              },
-              grid: { color: t.grid }
+                color: inkC,
+                callback: function (v) { return industriMetric === 'adhb' ? fmtNum(v / 1000, 1) + 'M' : v + '%'; }
+              }
             },
             y: {
-              ticks: {
-                color: t.ink,
-                font: { family: t.fontLabel, size: 11 }
-              },
-              grid: { display: false }
+              grid: { display: false },
+              ticks: { color: inkC, font: { size: 10.5 } }
             }
           }
         }
       });
     }
 
-    function renderPengGrowthChart() {
-      const canvas = document.getElementById(`chart-peng-growth`);
-      if (!canvas || typeof Chart === `undefined`) return;
-      const t = buildChartTheme();
+    function renderLuGrowthMatrixChart(canvasId, key, metric, posColor) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyChart(key);
 
-      const metric = state.pengMetric;
-      const metricTitles = {
-        qoq: `Komparasi Pertumbuhan QoQ (%) — Sisi Pengeluaran`,
-        yoy: `Komparasi Pertumbuhan YoY (%) — Sisi Pengeluaran`,
-        ctoc: `Komparasi Pertumbuhan CtoC (%) — Sisi Pengeluaran`
-      };
-      const metricSubs = {
-        qoq: `Hanya memuat metrik QoQ (Triwulan III-2026 vs Triwulan II-2026) antar-komponen pengeluaran`,
-        yoy: `Hanya memuat metrik YoY (Triwulan III-2026 vs Triwulan III-2025) antar-komponen pengeluaran`,
-        ctoc: `Hanya memuat metrik CtoC (Kumulatif Q1–Q3 2026 vs Q1–Q3 2025) antar-komponen pengeluaran`
-      };
+      const cats = LU_DATA.filter(function (r) { return r.level === 1; });
+      const labels = cats.map(function (r) { return r.code + ' · ' + (r.name.length > 18 ? r.name.slice(0, 16) + '…' : r.name); });
+      const vals = cats.map(function (r) { return r[metric]; });
+      const negColor = getCSSVar('--data-4');
+      const gridC = getCSSVar('--outline-variant');
+      const inkC = getCSSVar('--on-surface');
 
-      const titleEl = document.getElementById(`peng-growth-title`);
-      const subEl = document.getElementById(`peng-growth-sub`);
-      if (titleEl) titleEl.textContent = metricTitles[metric];
-      if (subEl) subEl.textContent = metricSubs[metric];
-
-      const chkWrap = document.getElementById(`wrap-chk-inv`);
-      if (chkWrap) chkWrap.style.display = state.pengScope === `main` ? `inline-flex` : `none`;
-
-      let rows = [];
-      if (state.pengScope === `main`) {
-        rows = pengData.filter(d => d.group === `main`);
-        if (!state.includeInventori) {
-          rows = rows.filter(d => d.code !== `5.`);
+      charts[key] = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: metric.toUpperCase() + ' (%)',
+            data: vals,
+            backgroundColor: buildBarColors(vals, posColor, negColor),
+            borderRadius: 2
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  const row = cats[ctx.dataIndex];
+                  return row.code + ' (' + row.name + '): ' + fmtSigned(row[metric]);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridC },
+              ticks: { color: inkC, callback: function (v) { return v + '%'; } }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: inkC, font: { size: 10.5 } }
+            }
+          }
         }
+      });
+    }
+
+    function renderPengStructureChart() {
+      const canvas = document.getElementById('chart-peng-structure');
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyChart('pengStruct');
+
+      const items = PENG_DATA.filter(function (r) {
+        return ['1', '2', '3', '4', '5', '6', '7', '8'].includes(r.code);
+      });
+      const labels = items.map(function (r) { return r.code + '. ' + r.name.replace('Pengeluaran Konsumsi ', 'PK '); });
+      const c1 = getCSSVar('--data-1');
+      const c2 = getCSSVar('--data-2');
+      const c4 = getCSSVar('--data-4');
+      const gridC = getCSSVar('--outline-variant');
+      const inkC = getCSSVar('--on-surface');
+
+      if (pengStructMode === 'share') {
+        const vals = items.map(function (r) { return r.share; });
+        charts.pengStruct = new Chart(canvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Share terhadap PDRB (%)',
+              data: vals,
+              backgroundColor: vals.map(function (v, idx) {
+                if (items[idx].code === '6' || items[idx].code === '7') return c2;
+                return v >= 0 ? c1 : c4;
+              }),
+              borderRadius: 2
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return 'Share PDRB: ' + fmtNum(ctx.parsed.x, 2) + '%'; }
+                }
+              }
+            },
+            scales: {
+              x: { grid: { color: gridC }, ticks: { color: inkC, callback: function (v) { return v + '%'; } } },
+              y: { grid: { display: false }, ticks: { color: inkC, font: { size: 11 } } }
+            }
+          }
+        });
       } else {
-        rows = pengData.filter(d => d.group === `pkrt` || d.group === `pmtb`);
+        charts.pengStruct = new Chart(canvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'ADHB (Miliar Rp)',
+                data: items.map(function (r) { return Number((r.adhb / 1000).toFixed(2)); }),
+                backgroundColor: c1,
+                borderRadius: 2
+              },
+              {
+                label: 'ADHK (Miliar Rp)',
+                data: items.map(function (r) { return Number((r.adhk / 1000).toFixed(2)); }),
+                backgroundColor: c2,
+                borderRadius: 2
+              }
+            ]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'top' },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.dataset.label + ': Rp ' + fmtNum(ctx.parsed.x, 2) + ' M'; }
+                }
+              }
+            },
+            scales: {
+              x: { grid: { color: gridC }, ticks: { color: inkC } },
+              y: { grid: { display: false }, ticks: { color: inkC, font: { size: 11 } } }
+            }
+          }
+        });
       }
+    }
 
-      rows = rows.slice().sort((a, b) => b[metric] - a[metric]);
+    function renderPengGrowthMatrixChart(canvasId, key, metric, posColor) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || typeof Chart === 'undefined') return;
+      destroyChart(key);
 
-      const labels = rows.map(r => `${r.code} ${r.name.length > 26 ? r.name.slice(0, 25) + `…` : r.name}`);
-      const values = rows.map(r => r[metric]);
-      const colors = rows.map(r => (r[metric] >= 0 ? t.data1 : t.data4));
+      const items = PENG_DATA.filter(function (r) {
+        if (r.level === 0) return false;
+        if (!includeInventori && r.code === '5') return false;
+        return ['1', '2', '3', '4', '4.a', '4.b', '5', '6', '7', '8'].includes(r.code);
+      });
 
-      if (chartPengGrowth) chartPengGrowth.destroy();
-      chartPengGrowth = new Chart(canvas, {
-        type: `bar`,
+      const labels = items.map(function (r) {
+        const shortName = r.name
+          .replace('Pengeluaran Konsumsi Rumah Tangga (PK-RT)', 'PK-RT')
+          .replace('Pengeluaran Konsumsi LNPRT (PK-LNPRT)', 'PK-LNPRT')
+          .replace('Pengeluaran Konsumsi Pemerintah (PK-P)', 'PK-Pemerintah')
+          .replace('Pembentukan Modal Tetap Bruto (PMTB / Investasi)', 'PMTB Total')
+          .replace('Ekspor Barang dan Jasa (Antarwilayah & LN)', 'Ekspor')
+          .replace('Impor Barang dan Jasa (Antarwilayah & LN)', 'Impor')
+          .replace('Net Ekspor (Ekspor dikurangi Impor)', 'Net Ekspor');
+        return r.code + ' · ' + shortName;
+      });
+      const vals = items.map(function (r) { return r[metric]; });
+      const negColor = getCSSVar('--data-4');
+      const gridC = getCSSVar('--outline-variant');
+      const inkC = getCSSVar('--on-surface');
+
+      charts[key] = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
         data: {
           labels: labels,
           datasets: [{
-            label: `${metric.toUpperCase()} (%)`,
-            data: values,
-            backgroundColor: colors,
-            borderRadius: 2,
-            barPercentage: 0.72
+            label: metric.toUpperCase() + ' (%)',
+            data: vals,
+            backgroundColor: buildBarColors(vals, posColor, negColor),
+            borderRadius: 2
           }]
         },
         options: {
-          indexAxis: `y`,
+          indexAxis: 'y',
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                title: (items) => {
-                  const r = rows[items[0].dataIndex];
-                  return `${r.code} ${r.name}`;
-                },
-                label: (ctx) => {
-                  const r = rows[ctx.dataIndex];
-                  return `${metric.toUpperCase()}: ${fmtPct(r[metric])}`;
+                label: function (ctx) {
+                  const row = items[ctx.dataIndex];
+                  return row.code + ' · ' + row.name + ': ' + fmtSigned(row[metric]);
                 }
               }
             }
           },
           scales: {
             x: {
-              title: {
-                display: true,
-                text: `Laju Pertumbuhan ${metric.toUpperCase()} (%)`,
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 }
-              },
-              ticks: {
-                color: t.muted,
-                font: { family: t.fontLabel, size: 11 },
-                callback: (v) => `${v}%`
-              },
-              grid: { color: t.grid }
+              grid: { color: gridC },
+              ticks: { color: inkC, callback: function (v) { return v + '%'; } }
             },
             y: {
-              ticks: {
-                color: t.ink,
-                font: { family: t.fontLabel, size: 11 }
-              },
-              grid: { display: false }
+              grid: { display: false },
+              ticks: { color: inkC, font: { size: 11 } }
             }
           }
         }
       });
     }
 
+    function renderAllCharts() {
+      const c1 = getCSSVar('--data-1');
+      const c3 = getCSSVar('--data-3');
+      renderLuStructureChart();
+      renderIndustriCChart();
+      renderLuGrowthMatrixChart('chart-lu-qoq', 'luQoQ', 'qoq', c1);
+      renderLuGrowthMatrixChart('chart-lu-yoy', 'luYoY', 'yoy', c3);
+      renderLuGrowthMatrixChart('chart-lu-ctoc', 'luCtoC', 'ctoc', c1);
+
+      renderPengStructureChart();
+      renderPengGrowthMatrixChart('chart-peng-qoq', 'pengQoQ', 'qoq', c1);
+      renderPengGrowthMatrixChart('chart-peng-yoy', 'pengYoY', 'yoy', c3);
+      renderPengGrowthMatrixChart('chart-peng-ctoc', 'pengCtoC', 'ctoc', c1);
+    }
+
     // =========================================================================
-    // 4. CHART CONTROL HANDLERS (HOISTED)
+    // 5. CHART SWITCHER HANDLERS (HOISTED)
     // =========================================================================
-    function setActiveGroup(ids, activeId) {
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.toggle(`active`, id === activeId);
+    function setLuStructureMode(mode) {
+      luStructMode = mode;
+      const bShare = document.getElementById('btn-lu-struct-share');
+      const bVal = document.getElementById('btn-lu-struct-val');
+      if (bShare) bShare.classList.toggle('active', mode === 'share');
+      if (bVal) bVal.classList.toggle('active', mode === 'value');
+      renderLuStructureChart();
+    }
+
+    function setIndustriMetric(metric) {
+      industriMetric = metric;
+      ['adhb', 'qoq', 'yoy', 'ctoc'].forEach(function (m) {
+        const btn = document.getElementById('btn-c-' + m);
+        if (btn) btn.classList.toggle('active', m === metric);
+      });
+      renderIndustriCChart();
+    }
+
+    function setPengStructureMode(mode) {
+      pengStructMode = mode;
+      const bShare = document.getElementById('btn-peng-struct-share');
+      const bVal = document.getElementById('btn-peng-struct-val');
+      if (bShare) bShare.classList.toggle('active', mode === 'share');
+      if (bVal) bVal.classList.toggle('active', mode === 'value');
+      renderPengStructureChart();
+    }
+
+    function toggleInventoriInCharts() {
+      includeInventori = !includeInventori;
+      const btn = document.getElementById('btn-toggle-inv');
+      if (btn) {
+        btn.classList.toggle('active', includeInventori);
+        btn.textContent = includeInventori ? 'Sertakan Inventori: Aktif' : 'Sertakan Inventori: Nonaktif';
+      }
+      const c1 = getCSSVar('--data-1');
+      const c3 = getCSSVar('--data-3');
+      renderPengGrowthMatrixChart('chart-peng-qoq', 'pengQoQ', 'qoq', c1);
+      renderPengGrowthMatrixChart('chart-peng-yoy', 'pengYoY', 'yoy', c3);
+      renderPengGrowthMatrixChart('chart-peng-ctoc', 'pengCtoC', 'ctoc', c1);
+    }
+
+    // =========================================================================
+    // 6. FULL 66-ROW LAPANGAN USAHA TABLE EXPLORER
+    // =========================================================================
+    function setLuFilter(mode) {
+      luFilterMode = mode;
+      const map = {
+        all: 'lu-f-all',
+        main: 'lu-f-main',
+        catC: 'lu-f-c',
+        catA: 'lu-f-a',
+        posYoY: 'lu-f-pos',
+        zero: 'lu-f-zero'
+      };
+      Object.keys(map).forEach(function (k) {
+        const el = document.getElementById(map[k]);
+        if (el) el.classList.toggle('active', k === mode);
+      });
+      renderLuTable();
+    }
+
+    function sortLu(col) {
+      if (luSortCol === col) {
+        luSortAsc = !luSortAsc;
+      } else {
+        luSortCol = col;
+        luSortAsc = col === 'order';
+      }
+      renderLuTable();
+    }
+
+    function resetLuSort() {
+      luSortCol = 'order';
+      luSortAsc = true;
+      renderLuTable();
+    }
+
+    function selectLuRow(code) {
+      luSelectedCode = code;
+      const row = LU_DATA.find(function (r) { return r.code === code; });
+      if (!row) return;
+
+      const elCode = document.getElementById('lu-insp-code');
+      const elName = document.getElementById('lu-insp-name');
+      const elNote = document.getElementById('lu-insp-note');
+      const elAdhb = document.getElementById('lu-insp-adhb');
+      const elAdhk = document.getElementById('lu-insp-adhk');
+      const elShare = document.getElementById('lu-insp-share');
+      const elDef = document.getElementById('lu-insp-deflator');
+      const elGro = document.getElementById('lu-insp-growth');
+
+      if (elCode) elCode.textContent = row.code;
+      if (elName) elName.textContent = row.name;
+      if (elNote) elNote.textContent = row.note;
+      if (elAdhb) elAdhb.textContent = fmtNum(row.adhb, 2);
+      if (elAdhk) elAdhk.textContent = fmtNum(row.adhk, 2);
+      if (elShare) elShare.textContent = fmtNum(row.share, 2) + '%';
+      const deflator = row.adhk > 0 ? (row.adhb / row.adhk) * 100 : null;
+      if (elDef) elDef.textContent = deflator !== null ? fmtNum(deflator, 2) : '—';
+      if (elGro) elGro.textContent = fmtSigned(row.qoq) + ' / ' + fmtSigned(row.yoy) + ' / ' + fmtSigned(row.ctoc);
+
+      const rows = document.querySelectorAll('#tbody-lu tr');
+      rows.forEach(function (tr) {
+        tr.classList.toggle('is-selected', tr.dataset.code === code);
       });
     }
 
-    function setLapusShareSort(mode) {
-      state.lapusShareSort = mode;
-      setActiveGroup([`btn-lapus-share-desc`, `btn-lapus-share-code`], mode === `desc` ? `btn-lapus-share-desc` : `btn-lapus-share-code`);
-      renderLapusShareChart();
-    }
+    function renderLuTable() {
+      const tbody = document.getElementById('tbody-lu');
+      const searchInput = document.getElementById('search-lu');
+      const countEl = document.getElementById('lu-row-count');
+      const sortEl = document.getElementById('lu-sort-status');
+      if (!tbody) return;
 
-    function setLapusMetric(metric) {
-      state.lapusMetric = metric;
-      setActiveGroup([`btn-lapus-qoq`, `btn-lapus-yoy`, `btn-lapus-ctoc`], `btn-lapus-${metric}`);
-      renderLapusGrowthChart();
-    }
+      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-    function setLapusScope(scope) {
-      state.lapusScope = scope;
-      setActiveGroup([`btn-lapus-scope-cat`, `btn-lapus-scope-sub`], scope === `cat` ? `btn-lapus-scope-cat` : `btn-lapus-scope-sub`);
-      renderLapusGrowthChart();
-    }
+      let filtered = LU_DATA.filter(function (r) {
+        if (luFilterMode === 'main' && r.level !== 1 && r.level !== 0) return false;
+        if (luFilterMode === 'catC' && r.cat !== 'C') return false;
+        if (luFilterMode === 'catA' && r.cat !== 'A') return false;
+        if (luFilterMode === 'posYoY' && (r.yoy === null || r.yoy <= 0)) return false;
+        if (luFilterMode === 'zero' && r.adhb !== 0) return false;
 
-    function setPengShareMode(mode) {
-      state.pengShareMode = mode;
-      setActiveGroup([`btn-peng-share-main`, `btn-peng-share-pkrt`], mode === `main` ? `btn-peng-share-main` : `btn-peng-share-pkrt`);
-      renderPengShareChart();
-    }
-
-    function setPengMetric(metric) {
-      state.pengMetric = metric;
-      setActiveGroup([`btn-peng-qoq`, `btn-peng-yoy`, `btn-peng-ctoc`], `btn-peng-${metric}`);
-      renderPengGrowthChart();
-    }
-
-    function setPengScope(scope) {
-      state.pengScope = scope;
-      setActiveGroup([`btn-peng-scope-main`, `btn-peng-scope-sub`], scope === `main` ? `btn-peng-scope-main` : `btn-peng-scope-sub`);
-      renderPengGrowthChart();
-    }
-
-    function toggleInventori(checked) {
-      state.includeInventori = Boolean(checked);
-      renderPengGrowthChart();
-    }
-
-    // =========================================================================
-    // 5. INTERACTIVE TABLES (SEARCH, FILTER, SORT, CSV)
-    // =========================================================================
-    function renderLapusTable() {
-      const tbody = document.getElementById(`tbody-lapus`);
-      const emptyEl = document.getElementById(`empty-lapus`);
-      const searchEl = document.getElementById(`search-lapus`);
-      const filterEl = document.getElementById(`filter-lapus`);
-      if (!tbody || !emptyEl) return;
-
-      const q = searchEl ? searchEl.value.trim().toLowerCase() : ``;
-      const f = filterEl ? filterEl.value : `all`;
-
-      let rows = lapusData.filter(r => {
-        const matchQ = !q || r.code.toLowerCase().includes(q) || r.name.toLowerCase().includes(q);
-        if (!matchQ) return false;
-        if (f === `parent`) return r.level === `parent`;
-        if (f === `sub`) return r.level === `sub`;
-        if (f === `yoy-pos`) return r.yoy !== null && r.yoy > 0;
-        if (f === `qoq-neg`) return r.qoq !== null && r.qoq < 0;
+        if (query) {
+          const hay = (r.code + ' ' + r.name + ' ' + r.note).toLowerCase();
+          if (hay.indexOf(query) === -1) return false;
+        }
         return true;
       });
 
-      if (state.lapusSortCol !== `default`) {
-        const col = state.lapusSortCol;
-        const dir = state.lapusSortDir === `asc` ? 1 : -1;
-        rows = rows.slice().sort((a, b) => {
-          if (col === `code`) return a.code.localeCompare(b.code) * dir;
-          const av = a[col] === null ? -Infinity : a[col];
-          const bv = b[col] === null ? -Infinity : b[col];
-          return (av - bv) * dir;
-        });
+      filtered = filtered.slice().sort(function (a, b) {
+        if (luSortCol === 'order') {
+          return luSortAsc ? a.order - b.order : b.order - a.order;
+        }
+        const av = a[luSortCol] === null ? -999999 : a[luSortCol];
+        const bv = b[luSortCol] === null ? -999999 : b[luSortCol];
+        return luSortAsc ? av - bv : bv - av;
+      });
+
+      if (countEl) countEl.textContent = 'Menampilkan ' + filtered.length + ' dari ' + LU_DATA.length + ' baris Lapangan Usaha';
+      if (sortEl) {
+        const colNames = { order: 'Hierarki Baku KBLI', adhb: 'ADHB', adhk: 'ADHK', share: 'Share (%)', qoq: 'QoQ (%)', yoy: 'YoY (%)', ctoc: 'CtoC (%)' };
+        sortEl.textContent = 'Urutan: ' + (colNames[luSortCol] || luSortCol) + (luSortCol === 'order' ? '' : (luSortAsc ? ' (Terkecil → Terbesar)' : ' (Terbesar → Terkecil)'));
       }
 
-      if (rows.length === 0) {
-        tbody.innerHTML = ``;
-        emptyEl.style.display = `block`;
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Tidak ada baris Lapangan Usaha yang cocok dengan filter atau kata kunci Anda. Ubah kata kunci atau klik <strong>Semua (66 Baris)</strong>.</td></tr>';
         return;
       }
-      emptyEl.style.display = `none`;
 
-      const htmlRows = rows.map(r => {
-        const rowClass = r.level === `sub` ? `row-sub` : `row-parent`;
-        const noteTag = r.note ? ` <span class="badge badge-warn" title="${r.note}">2026 Baru</span>` : ``;
-        return `<tr class="${rowClass}">
-          <td><span class="code-tag">${r.code}</span>${r.name}${noteTag}</td>
-          <td class="num">${fmtNum(r.adhb, 2)}</td>
-          <td class="num">${fmtNum(r.adhk, 2)}</td>
-          <td class="num">${fmtNum(r.share, 2)}%</td>
-          <td class="num"><span class="badge ${badgeClassForPct(r.qoq)}">${fmtPct(r.qoq)}</span></td>
-          <td class="num"><span class="badge ${badgeClassForPct(r.yoy)}">${fmtPct(r.yoy)}</span></td>
-          <td class="num"><span class="badge ${badgeClassForPct(r.ctoc)}">${fmtPct(r.ctoc)}</span></td>
-        </tr>`;
-      });
+      const html = filtered.map(function (r) {
+        const isZero = r.adhb === 0;
+        const levelClass = 'row-level-' + r.level + (isZero ? ' row-zero' : '') + (r.code === luSelectedCode ? ' is-selected' : '');
+        const badge = r.code === 'B.1' ? ' <span class="tag tag-warm" title="Komersialisasi baru masuk pencatatan 2026">Baru 2026</span>' : (isZero ? ' <span class="tag tag-info">Nihil</span>' : '');
+        return '<tr class="' + levelClass + '" data-code="' + r.code + '" onclick="selectLuRow(\'' + r.code + '\')">' +
+          '<td class="code-cell">' + r.code + '</td>' +
+          '<td class="name-cell">' + r.name + badge + '</td>' +
+          '<td class="num">' + fmtNum(r.adhb, 2) + '</td>' +
+          '<td class="num">' + fmtNum(r.adhk, 2) + '</td>' +
+          '<td class="num">' + fmtNum(r.share, 2) + '%</td>' +
+          '<td class="num ' + deltaClass(r.qoq) + '">' + fmtSigned(r.qoq) + '</td>' +
+          '<td class="num ' + deltaClass(r.yoy) + '">' + fmtSigned(r.yoy) + '</td>' +
+          '<td class="num ' + deltaClass(r.ctoc) + '">' + fmtSigned(r.ctoc) + '</td>' +
+        '</tr>';
+      }).join('');
 
-      htmlRows.push(`<tr class="row-total">
-        <td><span class="code-tag">${lapusTotal.code}</span>${lapusTotal.name}</td>
-        <td class="num">${fmtNum(lapusTotal.adhb, 2)}</td>
-        <td class="num">${fmtNum(lapusTotal.adhk, 2)}</td>
-        <td class="num">${fmtNum(lapusTotal.share, 2)}%</td>
-        <td class="num"><span class="badge ${badgeClassForPct(lapusTotal.qoq)}">${fmtPct(lapusTotal.qoq)}</span></td>
-        <td class="num"><span class="badge ${badgeClassForPct(lapusTotal.yoy)}">${fmtPct(lapusTotal.yoy)}</span></td>
-        <td class="num"><span class="badge ${badgeClassForPct(lapusTotal.ctoc)}">${fmtPct(lapusTotal.ctoc)}</span></td>
-      </tr>`);
-
-      tbody.innerHTML = htmlRows.join(``);
+      tbody.innerHTML = html;
     }
 
-    function sortLapus(col) {
-      if (state.lapusSortCol === col) {
-        state.lapusSortDir = state.lapusSortDir === `desc` ? `asc` : `desc`;
-      } else {
-        state.lapusSortCol = col;
-        state.lapusSortDir = col === `code` ? `asc` : `desc`;
-      }
-      renderLapusTable();
-    }
-
-    function resetLapusFilters() {
-      const s = document.getElementById(`search-lapus`);
-      const f = document.getElementById(`filter-lapus`);
-      if (s) s.value = ``;
-      if (f) f.value = `all`;
-      state.lapusSortCol = `default`;
-      state.lapusSortDir = `asc`;
-      renderLapusTable();
-    }
-
-    function renderPengTable() {
-      const tbody = document.getElementById(`tbody-peng`);
-      const emptyEl = document.getElementById(`empty-peng`);
-      const searchEl = document.getElementById(`search-peng`);
-      const filterEl = document.getElementById(`filter-peng`);
-      if (!tbody || !emptyEl) return;
-
-      const q = searchEl ? searchEl.value.trim().toLowerCase() : ``;
-      const f = filterEl ? filterEl.value : `all`;
-
-      let rows = pengData.filter(r => {
-        const matchQ = !q || r.code.toLowerCase().includes(q) || r.name.toLowerCase().includes(q);
-        if (!matchQ) return false;
-        if (f === `main`) return r.group === `main`;
-        if (f === `pkrt`) return r.group === `pkrt`;
-        if (f === `pmtb`) return r.group === `pmtb`;
-        return true;
+    // =========================================================================
+    // 7. FULL 18-ROW PENGELUARAN TABLE EXPLORER
+    // =========================================================================
+    function setPengFilter(mode) {
+      pengFilterMode = mode;
+      const map = {
+        all: 'peng-f-all',
+        main: 'peng-f-main',
+        pkrt: 'peng-f-pkrt',
+        pmtb: 'peng-f-pmtb'
+      };
+      Object.keys(map).forEach(function (k) {
+        const el = document.getElementById(map[k]);
+        if (el) el.classList.toggle('active', k === mode);
       });
-
-      if (state.pengSortCol !== `default`) {
-        const col = state.pengSortCol;
-        const dir = state.pengSortDir === `asc` ? 1 : -1;
-        rows = rows.slice().sort((a, b) => {
-          if (col === `code`) return a.code.localeCompare(b.code) * dir;
-          return (a[col] - b[col]) * dir;
-        });
-      }
-
-      if (rows.length === 0) {
-        tbody.innerHTML = ``;
-        emptyEl.style.display = `block`;
-        return;
-      }
-      emptyEl.style.display = `none`;
-
-      const htmlRows = rows.map(r => {
-        const rowClass = r.level === `sub` ? `row-sub` : `row-parent`;
-        return `<tr class="${rowClass}">
-          <td><span class="code-tag">${r.code}</span>${r.name}</td>
-          <td class="num">${fmtNum(r.adhb, 2)}</td>
-          <td class="num">${fmtNum(r.adhk, 2)}</td>
-          <td class="num">${fmtNum(r.share, 2)}%</td>
-          <td class="num"><span class="badge ${badgeClassForPct(r.qoq)}">${fmtPct(r.qoq)}</span></td>
-          <td class="num"><span class="badge ${badgeClassForPct(r.yoy)}">${fmtPct(r.yoy)}</span></td>
-          <td class="num"><span class="badge ${badgeClassForPct(r.ctoc)}">${fmtPct(r.ctoc)}</span></td>
-        </tr>`;
-      });
-
-      htmlRows.push(`<tr class="row-total">
-        <td><span class="code-tag">${pengTotal.code}</span>${pengTotal.name}</td>
-        <td class="num">${fmtNum(pengTotal.adhb, 2)}</td>
-        <td class="num">${fmtNum(pengTotal.adhk, 2)}</td>
-        <td class="num">${fmtNum(pengTotal.share, 2)}%</td>
-        <td class="num"><span class="badge ${badgeClassForPct(pengTotal.qoq)}">${fmtPct(pengTotal.qoq)}</span></td>
-        <td class="num"><span class="badge ${badgeClassForPct(pengTotal.yoy)}">${fmtPct(pengTotal.yoy)}</span></td>
-        <td class="num"><span class="badge ${badgeClassForPct(pengTotal.ctoc)}">${fmtPct(pengTotal.ctoc)}</span></td>
-      </tr>`);
-
-      tbody.innerHTML = htmlRows.join(``);
+      renderPengTable();
     }
 
     function sortPeng(col) {
-      if (state.pengSortCol === col) {
-        state.pengSortDir = state.pengSortDir === `desc` ? `asc` : `desc`;
+      if (pengSortCol === col) {
+        pengSortAsc = !pengSortAsc;
       } else {
-        state.pengSortCol = col;
-        state.pengSortDir = col === `code` ? `asc` : `desc`;
+        pengSortCol = col;
+        pengSortAsc = col === 'order';
       }
       renderPengTable();
     }
 
-    function resetPengFilters() {
-      const s = document.getElementById(`search-peng`);
-      const f = document.getElementById(`filter-peng`);
-      if (s) s.value = ``;
-      if (f) f.value = `all`;
-      state.pengSortCol = `default`;
-      state.pengSortDir = `asc`;
+    function resetPengSort() {
+      pengSortCol = 'order';
+      pengSortAsc = true;
       renderPengTable();
     }
 
-    function exportTableCsv(type) {
-      const rows = type === `lapus` ? lapusData.concat([lapusTotal]) : pengData.concat([pengTotal]);
-      const filename = type === `lapus`
-        ? `PDRB_Solok_Selatan_Q3_2026_Lapangan_Usaha.csv`
-        : `PDRB_Solok_Selatan_Q3_2026_Pengeluaran.csv`;
+    function renderPengTable() {
+      const tbody = document.getElementById('tbody-peng');
+      const searchInput = document.getElementById('search-peng');
+      const countEl = document.getElementById('peng-row-count');
+      const sortEl = document.getElementById('peng-sort-status');
+      if (!tbody) return;
 
-      const header = [`Kode`, `Uraian`, `ADHB_Juta_Rp`, `ADHK_Juta_Rp`, `Share_Persen`, `QoQ_Persen`, `YoY_Persen`, `CtoC_Persen`];
-      const csvLines = [header.join(`,`)];
+      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
-      rows.forEach(r => {
-        const cleanName = `"${r.name.replace(/"/g, `""`)}"`;
-        const yoyVal = r.yoy === null ? `-` : r.yoy;
-        const ctocVal = r.ctoc === null ? `-` : r.ctoc;
-        csvLines.push([`"${r.code}"`, cleanName, r.adhb, r.adhk, r.share, r.qoq, yoyVal, ctocVal].join(`,`));
+      let filtered = PENG_DATA.filter(function (r) {
+        if (pengFilterMode === 'main' && r.level !== 1 && r.level !== 0) return false;
+        if (pengFilterMode === 'pkrt' && r.group !== 'pkrt') return false;
+        if (pengFilterMode === 'pmtb' && r.group !== 'pmtb' && r.level !== 0) return false;
+        if (query) {
+          const hay = (r.code + ' ' + r.name + ' ' + r.note).toLowerCase();
+          if (hay.indexOf(query) === -1) return false;
+        }
+        return true;
       });
 
-      const blob = new Blob([csvLines.join(`\n`)], { type: `text/csv;charset=utf-8;` });
+      filtered = filtered.slice().sort(function (a, b) {
+        if (pengSortCol === 'order') {
+          return pengSortAsc ? a.order - b.order : b.order - a.order;
+        }
+        const av = a[pengSortCol] === null ? -999999 : a[pengSortCol];
+        const bv = b[pengSortCol] === null ? -999999 : b[pengSortCol];
+        return pengSortAsc ? av - bv : bv - av;
+      });
+
+      if (countEl) countEl.textContent = 'Menampilkan ' + filtered.length + ' dari ' + PENG_DATA.length + ' baris Sisi Pengeluaran';
+      if (sortEl) {
+        const colNames = { order: 'Struktur Baku Neraca Pengeluaran', adhb: 'ADHB', adhk: 'ADHK', share: 'Share (%)', qoq: 'QoQ (%)', yoy: 'YoY (%)', ctoc: 'CtoC (%)' };
+        sortEl.textContent = 'Urutan: ' + (colNames[pengSortCol] || pengSortCol) + (pengSortCol === 'order' ? '' : (pengSortAsc ? ' (Terkecil → Terbesar)' : ' (Terbesar → Terkecil)'));
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Tidak ada komponen pengeluaran yang cocok. Klik <strong>Semua (18 Baris)</strong> untuk menampilkan kembali seluruh data.</td></tr>';
+        return;
+      }
+
+      const html = filtered.map(function (r) {
+        const levelClass = 'row-level-' + r.level;
+        return '<tr class="' + levelClass + '">' +
+          '<td class="code-cell">' + r.code + '</td>' +
+          '<td class="name-cell">' + r.name + '</td>' +
+          '<td class="num">' + fmtNum(r.adhb, 2) + '</td>' +
+          '<td class="num">' + fmtNum(r.adhk, 2) + '</td>' +
+          '<td class="num">' + fmtNum(r.share, 2) + '%</td>' +
+          '<td class="num ' + deltaClass(r.qoq) + '">' + fmtSigned(r.qoq) + '</td>' +
+          '<td class="num ' + deltaClass(r.yoy) + '">' + fmtSigned(r.yoy) + '</td>' +
+          '<td class="num ' + deltaClass(r.ctoc) + '">' + fmtSigned(r.ctoc) + '</td>' +
+        '</tr>';
+      }).join('');
+
+      tbody.innerHTML = html;
+    }
+
+    // =========================================================================
+    // 8. CSV EXPORT (USES notebookAppApi WHEN AVAILABLE, BLOB FALLBACK OTHERWISE)
+    // =========================================================================
+    function exportTableCSV(which) {
+      const dataset = which === 'lu' ? LU_DATA : PENG_DATA;
+      const filename = which === 'lu'
+        ? 'PDRB_Solok_Selatan_Q3_2026_Lapangan_Usaha_66_Baris.csv'
+        : 'PDRB_Solok_Selatan_Q3_2026_Pengeluaran_18_Baris.csv';
+
+      const headers = ['Kode', 'Uraian', 'ADHB_Juta_Rp', 'ADHK_Juta_Rp', 'Share_Persen', 'QoQ_Persen', 'YoY_Persen', 'CtoC_Persen'];
+      const lines = [headers.join(',')];
+      dataset.forEach(function (r) {
+        const vals = [
+          '"' + r.code + '"',
+          '"' + r.name.replace(/"/g, '""') + '"',
+          r.adhb.toFixed(2),
+          r.adhk.toFixed(2),
+          r.share.toFixed(2),
+          r.qoq === null ? '' : r.qoq.toFixed(2),
+          r.yoy === null ? '' : r.yoy.toFixed(2),
+          r.ctoc === null ? '' : r.ctoc.toFixed(2)
+        ];
+        lines.push(vals.join(','));
+      });
+      const csvString = lines.join('\n');
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === 'function') {
+        window.notebookAppApi.triggerFileDownload({
+          content: csvString,
+          contentType: 'text/csv',
+          encoding: 'UTF-8',
+          filename: filename
+        });
+        return;
+      }
+
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement(`a`);
-      a.setAttribute(`href`, url);
-      a.setAttribute(`download`, filename);
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       URL.revokeObjectURL(url);
     }
 
     // =========================================================================
-    // 6. INITIALIZATION
+    // 9. BOOTSTRAP ON LOAD
     // =========================================================================
-    document.addEventListener(`DOMContentLoaded`, function () {
-      renderLapusShareChart();
-      renderLapusGrowthChart();
-      renderPengShareChart();
-      renderPengGrowthChart();
-      renderLapusTable();
+    window.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+      renderLuTable();
+      selectLuRow('A.1.e');
       renderPengTable();
+      renderAllCharts();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+        window.notebookAppApi.notifyAppReady();
+      }
     });
   </script>
 </body>
